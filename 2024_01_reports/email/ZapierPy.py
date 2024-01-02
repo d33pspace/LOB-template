@@ -4,6 +4,14 @@ import json
 
 local_mode = True  # True or False
 
+
+def translate_description(description):
+    lower_cased_description = description.lower()
+    if preferred_language != 'en' and lower_cased_description == 'for most urgent needs':
+        description = '为最急需帮助的人们'
+    return description
+
+
 def translate_payment_method(payment_method, reference=None):
     lower_cased_payment_method = payment_method.lower()
     if preferred_language != 'en':
@@ -107,7 +115,7 @@ for line_item in jsonObject['lineItems']:
     html_content = html_content.replace('{{ 202401_report_currency }}', translate_currency(unique_currencies, line_item['originalCurrency']))
     html_content = html_content.replace('{{ 202401_report_exchange_rate }}', '1' if line_item['originalCurrency'] == 'USD' else str(line_item['currencyRate']))
     html_content = html_content.replace('{{ 202401_report_usd_amount }}', line_item['invoiceTotalUSD'])
-    html_content = html_content.replace('{{ 202401_report_description }}', line_item['description'])
+    html_content = html_content.replace('{{ 202401_report_description }}', translate_description(line_item['description']))
     html_content = html_content.replace('{{ 202401_report_method }}', translate_payment_method(line_item['method'], line_item['reference']))
 
     # Append the generated HTML content to the list
