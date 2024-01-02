@@ -3,11 +3,9 @@ import requests
 import json
 
 local_mode = True  # True or False
-preferred_language = 'en'
-from_email = 'connect@renewal.org.cn'
 
-
-def translate_payment_method(payment_method):
+def translate_payment_method(payment_method, reference=None):
+    lower_cased_payment_method = payment_method.lower()
     if preferred_language != 'en':
         translation_dict = {
             'alipay': '支付宝',
@@ -19,10 +17,11 @@ def translate_payment_method(payment_method):
             'check': '支票',
             'yoopay': '友付'
         }
-        lowercased_payment_method = payment_method.lower()
-        return translation_dict.get(lowercased_payment_method, payment_method)
-    else:
-        return payment_method
+        payment_method = translation_dict.get(lower_cased_payment_method, payment_method)
+
+    if lower_cased_payment_method == 'check':
+        payment_method = f'{payment_method} #{reference}'
+    return payment_method
 
 
 def translate_currency(currency_set, currency=None):
@@ -59,13 +58,15 @@ def read_resource(url):
         return content
 
 
-json_input_url = f'https://renewal_ez.gitlab.io/public/lob_templates/2024_01_reports/email/input.json'
-main_template_url = f'https://renewal_ez.gitlab.io/public/lob_templates/2024_01_reports/email/email_report_{preferred_language}.html'
-email_report_en_line_item_multi_currency_url = f'https://renewal_ez.gitlab.io/public/lob_templates/2024_01_reports/email/email_report_{preferred_language}_line_item_multi_currency_template.html'
-email_report_en_line_item_single_currency_url = f'https://renewal_ez.gitlab.io/public/lob_templates/2024_01_reports/email/email_report_{preferred_language}_line_item_single_currency_template.html'
+json_input_url = f'https://d33pspace.github.io/LOB-template/2024_01_reports/email/input.json'
+main_template_url = f'https://d33pspace.github.io/LOB-template/2024_01_reports/email/email_report_{preferred_language}.html'
+email_report_en_line_item_multi_currency_url = f'https://d33pspace.github.io/LOB-template/2024_01_reports/email/email_report_{preferred_language}_line_item_multi_currency_template.html'
+email_report_en_line_item_single_currency_url = f'https://d33pspace.github.io/LOB-template/2024_01_reports/email/email_report_{preferred_language}_line_item_single_currency_template.html'
 
-jsonObject = read_resource(json_input_url) if local_mode else json.loads(input_data["jsonObject"])
-mailTo = 'connect@renewal.org.cn' if local_mode else json.loads(input_data["mailTo"])
+jsonObject = read_resource(json_input_url) if local_mode else json.loads(input_data["json_object"])
+preferred_language = 'en' if local_mode else json.loads(input_data["preferred_language"])
+from_email = 'connect@renewal.org.cn'
+mailTo = 'connect@renewal.org.cn' if local_mode else json.loads(input_data["mail_to"])
 contactName = jsonObject["contactName"]
 salutation = contactName if local_mode else json.loads(input_data["salutation"])
 salutation = contactName if salutation is None or salutation == "" else salutation
@@ -104,7 +105,7 @@ for line_item in jsonObject['lineItems']:
     html_content = html_content.replace('{{ 202401_report_exchange_rate }}', '1' if line_item['originalCurrency'] == 'USD' else str(line_item['currencyRate']))
     html_content = html_content.replace('{{ 202401_report_usd_amount }}', line_item['invoiceTotalUSD'])
     html_content = html_content.replace('{{ 202401_report_description }}', line_item['description'])
-    html_content = html_content.replace('{{ 202401_report_method }}', translate_payment_method(line_item['method']))
+    html_content = html_content.replace('{{ 202401_report_method }}', translate_payment_method(line_item['method'], line_item['reference']))
 
     # Append the generated HTML content to the list
     line_items_content_array.append(html_content)
