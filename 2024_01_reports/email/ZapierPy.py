@@ -58,18 +58,21 @@ def read_resource(url):
         return content
 
 
-json_input_url = f'https://d33pspace.github.io/LOB-template/2024_01_reports/email/input.json'
-main_template_url = f'https://d33pspace.github.io/LOB-template/2024_01_reports/email/email_report_{preferred_language}.html'
-email_report_en_line_item_multi_currency_url = f'https://d33pspace.github.io/LOB-template/2024_01_reports/email/email_report_{preferred_language}_line_item_multi_currency_template.html'
-email_report_en_line_item_single_currency_url = f'https://d33pspace.github.io/LOB-template/2024_01_reports/email/email_report_{preferred_language}_line_item_single_currency_template.html'
+public_page_url="https://d33pspace.github.io/LOB-template"
+json_input_url = f'{public_page_url}/2024_01_reports/email/input.json'
 
 jsonObject = read_resource(json_input_url) if local_mode else json.loads(input_data["json_object"])
 preferred_language = 'en' if local_mode else json.loads(input_data["preferred_language"])
+preferred_language = 'en' if 'en' in preferred_language else 'zh'
 from_email = 'connect@renewal.org.cn'
 mailTo = 'connect@renewal.org.cn' if local_mode else json.loads(input_data["mail_to"])
 contactName = jsonObject["contactName"]
 salutation = contactName if local_mode else json.loads(input_data["salutation"])
 salutation = contactName if salutation is None or salutation == "" else salutation
+
+main_template_url = f'{public_page_url}/2024_01_reports/email/email_report_{preferred_language}.html'
+email_report_en_line_item_multi_currency_url = f'{public_page_url}/2024_01_reports/email/email_report_{preferred_language}_line_item_multi_currency_template.html'
+email_report_en_line_item_single_currency_url = f'{public_page_url}/2024_01_reports/email/email_report_{preferred_language}_line_item_single_currency_template.html'
 
 main_html_template = read_resource(main_template_url)
 email_report_en_line_item_multi_currency_template = read_resource(email_report_en_line_item_multi_currency_url)
