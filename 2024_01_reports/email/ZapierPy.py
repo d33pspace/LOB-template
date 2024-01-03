@@ -8,6 +8,7 @@ local_mode = False  # True or False
 if "local_mode=true" in sys.argv:
     local_mode = True
 
+
 def translate_description(description):
     lower_cased_description = description.lower()
     if preferred_language != 'en' and lower_cased_description == 'for most urgent needs':
