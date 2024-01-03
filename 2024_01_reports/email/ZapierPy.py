@@ -1,8 +1,9 @@
 import os
 import requests
 import json
+from datetime import datetime
 
-local_mode = True  # True or False
+local_mode = False  # True or False
 
 
 def translate_description(description):
@@ -10,6 +11,17 @@ def translate_description(description):
     if preferred_language != 'en' and lower_cased_description == 'for most urgent needs':
         description = '为最急需帮助的人们'
     return description
+
+
+def format_date_of_gift(date_string):
+    parsed_date = datetime.strptime(date_string, "%m/%d/%Y")
+
+    # Format the date based on preferred_language
+    if preferred_language != 'en':
+        formatted_date = parsed_date.strftime("%Y-%m-%d")
+    else:
+        formatted_date = parsed_date.strftime("%m/%d/%Y")
+    return formatted_date
 
 
 def translate_payment_method(payment_method, reference=None):
@@ -97,6 +109,7 @@ for line_item in jsonObject['lineItems']:
 line_item_template_to_use = email_report_en_line_item_single_currency_url if len(unique_currencies) == 1 \
     else email_report_en_line_item_multi_currency_template
 
+amount_format = "{:,.2f}"
 total_giving = "{:,.2f} {}"
 if len(unique_currencies) == 1:
     total_giving = total_giving.format(unitPriceSource_Count, translate_currency(unique_currencies))
@@ -109,12 +122,12 @@ line_items_content_array = []
 # Iterate through each line item in the JSON object
 for line_item in jsonObject['lineItems']:
     # Replace placeholders in the HTML template with values from the JSON object
-    html_content = line_item_template_to_use.replace('{{ 202401_report_date }}', line_item['invoiceDate'])
-    html_content = html_content.replace('{{ 202401_report_transaction_reference }}', line_item['invoiceNumber'])
-    html_content = html_content.replace('{{ 202401_report_amount }}', line_item['unitPriceSource'])
+    html_content = line_item_template_to_use.replace('{{ 202401_report_date }}', format_date_of_gift(line_item['invoiceDate']))
+    html_content = html_content.replace('{{ 202401_report_transaction_reference }}', line_item['invoiceNumber'].replace("INV", "RWL"))
+    html_content = html_content.replace('{{ 202401_report_amount }}', amount_format.format(float(line_item['unitPriceSource'])))
     html_content = html_content.replace('{{ 202401_report_currency }}', translate_currency(unique_currencies, line_item['originalCurrency']))
     html_content = html_content.replace('{{ 202401_report_exchange_rate }}', '1' if line_item['originalCurrency'] == 'USD' else str(line_item['currencyRate']))
-    html_content = html_content.replace('{{ 202401_report_usd_amount }}', line_item['invoiceTotalUSD'])
+    html_content = html_content.replace('{{ 202401_report_usd_amount }}', amount_format.format(float(line_item['invoiceTotalUSD'])))
     html_content = html_content.replace('{{ 202401_report_description }}', translate_description(line_item['description']))
     html_content = html_content.replace('{{ 202401_report_method }}', translate_payment_method(line_item['method'], line_item['reference']))
 
