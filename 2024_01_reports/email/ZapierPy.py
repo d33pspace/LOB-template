@@ -1,10 +1,12 @@
 import os
+import sys
 import requests
 import json
 from datetime import datetime
 
 local_mode = False  # True or False
-
+if "local_mode=true" in sys.argv:
+    local_mode = True
 
 def translate_description(description):
     lower_cased_description = description.lower()
@@ -143,8 +145,7 @@ main_html_content = main_html_content.replace('{{ 202401_report_total_giving }}'
 main_html_content = main_html_content.replace('{{ from_email }}', from_email)
 main_html_content = main_html_content.replace('{{ subscriber.email }}', mailTo)
 main_html_content = main_html_content.replace('{{ subscriber.salutation }}', salutation)
-# main_html_content = main_html_content.replace('{{ inline_postal_address }}', mailTo)
-# main_html_content = main_html_content.replace('{{ unsubscribe_url }}', mailTo)
+main_html_content = main_html_content.replace('{{ inline_postal_address }}', '548 Market St # 54802, San Francisco CA, 94104')
 
 output = {"output": main_html_content}
 
