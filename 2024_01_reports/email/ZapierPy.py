@@ -50,7 +50,7 @@ def translate_payment_method(payment_method, reference=None):
 def translate_currency(currency_set, currency=None):
     if currency is None:
         # If currency is not provided, pop the single currency from the set
-        currency = currency_set.pop()
+        currency = next(iter(currency_set), None)
 
     if len(currency_set) != 1:
         return 'USD' if preferred_language == 'en' else '美元'
@@ -86,7 +86,7 @@ json_input_url = f'{public_page_url}/2024_01_reports/email/input.json'
 
 jsonObject = read_resource(json_input_url) if local_mode else json.loads(input_data["json_object"])
 preferred_language = 'en' if local_mode else input_data["preferred_language"]
-preferred_language = 'en' if 'en' in preferred_language else 'zh'
+preferred_language = 'zh' if 'zh' in preferred_language else 'en'
 from_email = 'connect@renewal.org.cn'
 mailTo = 'connect@renewal.org.cn' if local_mode else input_data["mail_to"]
 contactName = jsonObject["contactName"]
@@ -141,7 +141,7 @@ for line_item in jsonObject['lineItems']:
 line_items_html_content = "\n".join(line_items_content_array)
 
 main_html_content = main_html_template.replace('{{ 202401_report_salutation }}', salutation)
-main_html_content = main_html_template.replace('{{ 202401_report_donor_name }}', contactName)
+main_html_content = main_html_content.replace('{{ 202401_report_donor_name }}', contactName)
 main_html_content = main_html_content.replace('{{ 202401_report_line_items }}', line_items_html_content)
 main_html_content = main_html_content.replace('{{ 202401_report_total_giving }}', total_giving)
 main_html_content = main_html_content.replace('{{ from_email }}', from_email)
