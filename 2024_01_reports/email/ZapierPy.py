@@ -140,13 +140,14 @@ for line_item in jsonObject['lineItems']:
 # Concatenate all HTML contents into one string
 line_items_html_content = "\n".join(line_items_content_array)
 
-main_html_content = main_html_template.replace('{{ 202401_report_donor_name }}', salutation)
+main_html_content = main_html_template.replace('{{ 202401_report_salutation }}', salutation)
+main_html_content = main_html_template.replace('{{ 202401_report_donor_name }}', contactName)
 main_html_content = main_html_content.replace('{{ 202401_report_line_items }}', line_items_html_content)
 main_html_content = main_html_content.replace('{{ 202401_report_total_giving }}', total_giving)
 main_html_content = main_html_content.replace('{{ from_email }}', from_email)
 main_html_content = main_html_content.replace('{{ subscriber.email }}', mailTo)
 main_html_content = main_html_content.replace('{{ subscriber.salutation }}', salutation)
-main_html_content = main_html_content.replace('{{ inline_postal_address }}', '548 Market St # 54802, San Francisco CA, 94104')
+main_html_content = main_html_content.replace('{{ inline_postal_address }}', '548 Market St # 54802, San Francisco CA, 94104, USA')
 
 output = {"output": main_html_content}
 
