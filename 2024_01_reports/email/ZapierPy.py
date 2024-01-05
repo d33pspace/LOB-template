@@ -152,7 +152,7 @@ main_html_content = main_html_content.replace('{{ inline_postal_address }}', '54
 output = {"output": main_html_content}
 
 if local_mode:
-    output_file_name = 'test.html'
+    output_file_name = f'test_{preferred_language}.html'
     with open(output_file_name, 'w', encoding='utf-8') as output_file:
         output_file.write(main_html_content)
     print(f'The final HTML content has been written to {output_file_name}')

@@ -2,5 +2,5 @@
 /shelf/
 /workspace.xml
 .idea
-**/test.html
+**/test*.html
 **/Test.py
