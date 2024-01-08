@@ -78,7 +78,7 @@ def read_resource(url):
         return content
 
 
-if 'input_data' not in locals() or 'input_data' not in globals():
+if local_mode:
     read_json_object = json.dumps(read_resource("input.json"))
     input_data = {
         "json_object": read_json_object,
