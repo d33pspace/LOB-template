@@ -84,7 +84,7 @@ if 'input_data' not in locals() or 'input_data' not in globals():
         "json_object": read_json_object,
         "preferred_language": "zh",
         "mail_to": "edwazhao@hotmail.com",
-        "salutation": ""
+        "salutation": "fff"
     }
 
 jsonObject = json.loads(input_data["json_object"])
