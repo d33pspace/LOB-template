@@ -23,7 +23,8 @@ def format_date_of_gift(date_string):
     if preferred_language != 'en':
         formatted_date = parsed_date.strftime("%Y-%m-%d")
     else:
-        formatted_date = parsed_date.strftime("%m/%d/%Y")
+        formatted_date = parsed_date.strftime("%Y-%m-%d")
+        # ("%m/%d/%Y")
     return formatted_date
 
 
