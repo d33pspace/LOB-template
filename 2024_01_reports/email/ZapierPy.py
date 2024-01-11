@@ -49,19 +49,18 @@ def translate_payment_method(payment_method, reference=None):
 
 
 def translate_currency(currency_set, currency=None):
-    if currency is None:
-        # If currency is not provided, pop the single currency from the set
-        currency = next(iter(currency_set), None)
 
     if len(currency_set) > 1:
         return 'USD' if preferred_language == 'en' else '美元'
+    # if currency is None:
+    #     # If currency is not provided, pop the single currency from the set
+    #     currency = next(iter(currency_set), None)
+    if currency == 'USD':
+        return 'USD' if preferred_language == 'en' else '美元'
+    elif currency == 'CNY':
+        return 'CNY' if preferred_language == 'en' else '人民币'
     else:
-        if currency == 'USD':
-            return 'USD' if preferred_language == 'en' else '美元'
-        elif currency == 'CNY':
-            return 'CNY' if preferred_language == 'en' else '人民币'
-        else:
-            return currency
+        return currency
 
 
 def read_resource(url):
@@ -130,7 +129,7 @@ def compose_html():
         html_content = html_content.replace('{{ 202401_report_amount }}',
                                             amount_format.format(float(line_item['unitPriceSource'])))
         html_content = html_content.replace('{{ 202401_report_currency }}',
-                                            translate_currency(unique_currencies, line_item['originalCurrency']))
+                                            translate_currency({}, line_item['originalCurrency']))
         html_content = html_content.replace('{{ 202401_report_exchange_rate }}',
                                             '1' if line_item['originalCurrency'] == 'USD' else str(
                                                 line_item['currencyRate']))
