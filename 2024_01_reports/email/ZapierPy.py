@@ -191,4 +191,4 @@ output = {}
 if "contactName" in jsonObject:
     output = compose_html()
 else:
-    output = {"error": json_error, "email_content": "", "email_subject": ""}
+    output = {"error": json_error}
