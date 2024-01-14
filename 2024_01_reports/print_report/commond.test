@@ -37,7 +37,7 @@ curl https://api.lob.com/v1/letters \
   -d "from[address_state]=CA" \
   -d "from[address_zip]=94104" \
   -d "from[address_country]=US" \
-  --data-urlencode "file=tmpl_5f11b1de728e363" \
+  --data-urlencode "file=tmpl_c824be78146e8fa" \
   -d "color=true" \
   -d "double_sided=true" \
   -d "return_envelope=true" \
@@ -45,3 +45,7 @@ curl https://api.lob.com/v1/letters \
   -d "perforated_page=1" \
   -d "mail_type=usps_first_class" \
   -d "merge_variables[93710553__COL]=xxxxxx"
+
+
+
+
