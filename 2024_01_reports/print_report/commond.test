@@ -50,3 +50,9 @@ curl https://api.lob.com/v1/letters \
 
 
 
+htmlTemplate=`cat renewal.html`
+TOKEN=05b14c23a9a9ffa91b5d7ae8499bed4b166f503ab47b964b3e76c0da468d3597eaa3d0538f285f17af10bd2fa01f8163af097bca396b1a93bf75f11c99cf3535
+curl --request POST --url https://hastebin.com/documents --header "Authorization: Bearer $TOKEN" --header "content-type: text/plain" --data "$htmlTemplate"
+
+
+
