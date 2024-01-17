@@ -121,6 +121,7 @@ def compose_html():
 
 
 def upload_string_to_ftp(host, username, password, html_string, remote_file_path):
+    error = ""
     try:
         # Connect to the FTP server
         with FTP(host) as ftp:
@@ -137,53 +138,11 @@ def upload_string_to_ftp(host, username, password, html_string, remote_file_path
             # Upload the file to the FTP server
             ftp.storbinary(f'STOR {remote_file_path}', html_file)
 
-        print(f"String uploaded to '{remote_file_path}' on FTP server.")
+        print(f"Uploaded to '{remote_file_path}' on FTP server.")
     except Exception as e:
-        print(f"Error: {e}")
+        error = f"FTP Error: {e}"
 
-
-def send_letter(api_key, to_name, to_address, file_url):
-    url = "https://api.lob.com/v1/letters"
-
-    headers = {
-        "Content-Type": "application/x-www-form-urlencoded",
-    }
-
-    from_address = {
-        "address_line1": "548 Market St # 54802",
-        "address_city": "San Francisco",
-        "address_state": "CA",
-        "address_zip": "94104",
-        "address_country": "US",
-    }
-    data = {
-        "to[name]": to_name,
-        "to[address_line1]": to_address["address_line1"],
-        "to[address_city]": to_address["address_city"],
-        "to[address_state]": to_address["address_state"],
-        "to[address_zip]": to_address["address_zip"],
-        "to[address_country]": to_address["address_country"],
-        "from[name]": "The Renewal Center",
-        "from[address_line1]": from_address["address_line1"],
-        "from[address_city]": from_address["address_city"],
-        "from[address_state]": from_address["address_state"],
-        "from[address_zip]": from_address["address_zip"],
-        "from[address_country]": from_address["address_country"],
-        "file": file_url,
-        "color": "true",
-        "double_sided": "true",
-        "return_envelope": "true",
-        "address_placement": "top_first_page",
-        "perforated_page": "1",
-        "mail_type": "usps_first_class",
-    }
-
-    auth = (api_key, "")
-
-    response = requests.post(url, headers=headers, data=data, auth=auth)
-
-    return response.status_code, response.text
-
+    return error
 
 #
 # main code
@@ -198,12 +157,9 @@ if local_mode:
     # read_json_object = json.dumps(read_resource("input.json"))
     input_data = {
         "json_object": read_json_object,
-        "salutation": "",
-        "lob_live_mode": "F"
+        "salutation": ""
     }
 
-lob_live_mode = True if "true" == input_data["lob_live_mode"].lower() else False
-api_key = "test_4256e51a3f0db7b2ccddb6bfef111c5d538"
 jsonObject = {}
 json_error = ''
 try:
@@ -221,24 +177,10 @@ if "contactName" in jsonObject:
     random_chars = str(uuid.uuid4())[:6]
     html_file_name = datetime.now().strftime("%m%d") + "_" + jsonObject["contactName"] + "_" + random_chars + ".html"
     remote_html_file_path = f"{remote_html_directory}{html_file_name}"
-    upload_string_to_ftp(ftp_host, ftp_username, ftp_password, html_content, remote_html_file_path)
+    error = upload_string_to_ftp(ftp_host, ftp_username, ftp_password, html_content, remote_html_file_path)
     ftp_html_path = f"https://renewal365.org/images/donorreport/templates/2024_lob_reports/{html_file_name}"
 
-    # call LOB
-    to_name = "John and Jane Sample"
-    to_address = {
-        "address_line1": "100 Oak St",
-        "address_city": "Sample",
-        "address_state": "NC",
-        "address_zip": "10101",
-        "address_country": "US",
-    }
-    status_code, response_text = send_letter(api_key, to_name, to_address, ftp_html_path)
-
-    print("Status Code:", status_code)
-    print("Response:", response_text)
-
-    output = {""}
+    output = {"ftp_html_path": ftp_html_path, "error": error}
 else:
     output = {"error": json_error}
 
