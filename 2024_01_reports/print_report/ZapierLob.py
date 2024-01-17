@@ -5,11 +5,23 @@ import json
 import uuid
 from ftplib import FTP
 from datetime import datetime
+from io import BytesIO
+import unicodedata
+
 
 preferred_language = 'en'
 local_mode = False  # True or False
 if "local_mode=true" in sys.argv:
     local_mode = True
+
+
+def contains_only_halfwidth_characters(input_string):
+    for char in input_string:
+        # Check if the character is a half-width character
+        if unicodedata.east_asian_width(char) != 'Na' and unicodedata.east_asian_width(char) != 'F':
+            return ""
+    return input_string
+
 
 def format_date_of_gift(date_string):
     parsed_date = datetime.strptime(date_string, "%m/%d/%Y")
@@ -24,7 +36,6 @@ def format_date_of_gift(date_string):
 
 
 def translate_currency(currency_set, currency=None):
-
     if len(currency_set) > 1:
         return 'USD' if preferred_language == 'en' else '美元'
 
@@ -121,7 +132,7 @@ def compose_html():
 
 
 def upload_string_to_ftp(host, username, password, html_string, remote_file_path):
-    error = ""
+    ftp_error = ""
     try:
         # Connect to the FTP server
         with FTP(host) as ftp:
@@ -132,17 +143,18 @@ def upload_string_to_ftp(host, username, password, html_string, remote_file_path
             html_bytes = html_string.encode('utf-8')
 
             # Open a BytesIO object as a file-like object
-            from io import BytesIO
             html_file = BytesIO(html_bytes)
 
             # Upload the file to the FTP server
             ftp.storbinary(f'STOR {remote_file_path}', html_file)
 
         print(f"Uploaded to '{remote_file_path}' on FTP server.")
-    except Exception as e:
-        error = f"FTP Error: {e}"
+    except Exception as ftp_ex:
+        print(f"FTP Error: {ftp_ex}")
+        ftp_error = f"FTP Error: {ftp_ex}"
 
-    return error
+    return ftp_error
+
 
 #
 # main code
@@ -157,7 +169,7 @@ if local_mode:
     # read_json_object = json.dumps(read_resource("input.json"))
     input_data = {
         "json_object": read_json_object,
-        "salutation": ""
+        "salutation": "Amadeus"
     }
 
 jsonObject = {}
@@ -175,7 +187,7 @@ if "contactName" in jsonObject:
 
     # https://renewal365.org/images/donorreport/templates/2024_lob_reports/0116_contactName.html
     random_chars = str(uuid.uuid4())[:6]
-    html_file_name = datetime.now().strftime("%m%d") + "_" + jsonObject["contactName"] + "_" + random_chars + ".html"
+    html_file_name = datetime.now().strftime("%m%d") + "_" + contains_only_halfwidth_characters(input_data["salutation"]) + "_" + random_chars + ".html"
     remote_html_file_path = f"{remote_html_directory}{html_file_name}"
     error = upload_string_to_ftp(ftp_host, ftp_username, ftp_password, html_content, remote_html_file_path)
     ftp_html_path = f"https://renewal365.org/images/donorreport/templates/2024_lob_reports/{html_file_name}"
@@ -183,8 +195,3 @@ if "contactName" in jsonObject:
     output = {"ftp_html_path": ftp_html_path, "error": error}
 else:
     output = {"error": json_error}
-
-
-
-
-
