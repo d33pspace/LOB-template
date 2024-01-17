@@ -52,9 +52,11 @@ def translate_currency(currency_set, currency=None):
 
     if len(currency_set) > 1:
         return 'USD' if preferred_language == 'en' else '美元'
-    # if currency is None:
-    #     # If currency is not provided, pop the single currency from the set
-    #     currency = next(iter(currency_set), None)
+
+    if currency is None and len(currency_set) == 1:
+        # If currency is not provided, pop the single currency from the set
+        currency = next(iter(currency_set), None)
+
     if currency == 'USD':
         return 'USD' if preferred_language == 'en' else '美元'
     elif currency == 'CNY':
@@ -167,6 +169,9 @@ def compose_html():
     return {"email_content": main_html_content, "email_subject": email_subject}
 
 
+#
+# main code
+#
 if local_mode:
     read_json_object = read_resource("input.json")
     # read_json_object = json.dumps(read_resource("input.json"))
