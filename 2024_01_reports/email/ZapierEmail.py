@@ -84,8 +84,6 @@ def read_resource(url):
 
 
 def compose_html():
-    preferred_language = 'zh' if "preferred_language" in input_data and 'zh' in input_data[
-        "preferred_language"] else 'en'
     from_email = 'connect@renewal.org.cn'
     mailTo = input_data["mail_to"]
     contactName = jsonObject["contactName"]
@@ -182,7 +180,7 @@ if local_mode:
         "salutation": "xxx"
     }
 
-preferred_language = "en"
+preferred_language = 'zh' if "preferred_language" in input_data and 'zh' in input_data["preferred_language"] else 'en'
 jsonObject = {}
 json_error = ''
 try:

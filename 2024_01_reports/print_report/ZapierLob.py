@@ -100,6 +100,7 @@ def compose_html():
 
     # List to store generated HTML content
     line_items_content_array = []
+
     # Iterate through each line item in the JSON object
     for line_item in jsonObject['lineItems']:
         # Replace placeholders in the HTML template with values from the JSON object
@@ -128,7 +129,7 @@ def compose_html():
             output_file.write(main_html_content)
         print(f'The final HTML content has been written to {output_file_name}')
 
-    return main_html_content
+    return main_html_content, len(line_items_content_array)
 
 
 def upload_string_to_ftp(host, username, password, html_string, remote_file_path):
@@ -183,7 +184,7 @@ except ValueError as e:
 
 output = {}
 if "contactName" in jsonObject:
-    html_content = compose_html()
+    html_content, count_of_line_items = compose_html()
 
     # https://renewal365.org/images/donorreport/templates/2024_lob_reports/0116_contactName.html
     random_chars = str(uuid.uuid4())[:6]
@@ -192,6 +193,12 @@ if "contactName" in jsonObject:
     error = upload_string_to_ftp(ftp_host, ftp_username, ftp_password, html_content, remote_html_file_path)
     ftp_html_path = f"https://renewal365.org/images/donorreport/templates/2024_lob_reports/{html_file_name}"
 
+    if (error is None or error == '') and count_of_line_items > 15:
+        error = f"count_of_line_items is {count_of_line_items} which exceed the frame"
+
     output = {"ftp_html_path": ftp_html_path, "error": error}
 else:
     output = {"error": json_error}
+
+if local_mode:
+    print(output)
