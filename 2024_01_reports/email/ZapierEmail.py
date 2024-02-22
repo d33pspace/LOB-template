@@ -49,20 +49,20 @@ def translate_payment_method(payment_method, reference=None):
 
 
 def translate_currency(currency_set, currency=None):
-    return 'USD' if preferred_language == 'en' else '美元'
-    # if len(currency_set) > 1:
-    #     return 'USD' if preferred_language == 'en' else '美元'
-    #
-    # if currency is None and len(currency_set) == 1:
-    #     # If currency is not provided, pop the single currency from the set
-    #     currency = next(iter(currency_set), None)
-    #
-    # if currency == 'USD':
-    #     return 'USD' if preferred_language == 'en' else '美元'
-    # elif currency == 'CNY':
-    #     return 'CNY' if preferred_language == 'en' else '人民币'
-    # else:
-    #     return currency
+
+    if len(currency_set) > 1:
+        return 'USD' if preferred_language == 'en' else '美元'
+
+    if currency is None and len(currency_set) == 1:
+        # If currency is not provided, pop the single currency from the set
+        currency = next(iter(currency_set), None)
+
+    if currency == 'USD':
+        return 'USD' if preferred_language == 'en' else '美元'
+    elif currency == 'CNY':
+        return 'CNY' if preferred_language == 'en' else '人民币'
+    else:
+        return currency
 
 
 def read_resource(url):
@@ -107,11 +107,15 @@ def compose_html():
         invoiceTotalUSD_Count += float(line_item['invoiceTotalUSD'])
         unitPriceSource_Count += float(line_item['unitPriceSource'])
 
-    line_item_template_to_use = email_report_en_line_item_multi_currency_template
+    line_item_template_to_use = email_report_en_line_item_single_currency_url if len(unique_currencies) == 1 \
+        else email_report_en_line_item_multi_currency_template
 
     amount_format = "{:,.2f}"
     total_giving = "{:,.2f} {}"
-    total_giving = total_giving.format(invoiceTotalUSD_Count, translate_currency(unique_currencies))
+    if len(unique_currencies) == 1:
+        total_giving = total_giving.format(unitPriceSource_Count, translate_currency(unique_currencies))
+    else:
+        total_giving = total_giving.format(invoiceTotalUSD_Count, translate_currency(unique_currencies))
 
     # List to store generated HTML content
     line_items_content_array = []
