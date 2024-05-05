@@ -60,10 +60,10 @@ def send_wechat_messsage(input_obj):
 if local_mode:
     input_data = {
         "phone_number": "15250982865",
-        "wechat_nickname": "名称12865",
+        "wechat_nickname": "名称2865",
         "preferred_language": "en-us",
         "contributor": "James Edward McWhinney (0484)",
-        "amount": "13.12",
+        "amount": "11.12",
         "method": "Alipay",
         "reference": "REL-808111"
     }
