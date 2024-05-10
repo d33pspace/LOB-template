@@ -11,7 +11,7 @@ if "local_mode=true" in sys.argv:
 
 def update_website(input_obj):
 
-    if "email" not in input_obj or not input_obj["email"]:
+    if input_obj.get("email", "") == "":
         return {"update_count": 0, "message": "update failed because empty email"}
 
     if input_obj.get("email", "").endswith("@alt.renewal.org.cn"):
@@ -27,9 +27,9 @@ def update_website(input_obj):
         'Authorization': 'API gzWGFkOzdPqrr8DiNYbWJjNGExMDczNmVlNzU3NzoXOTeJDYyz'
     }
     try:
-        if input_obj["receipt_preference"] == "N":
+        if input_obj.get("receipt_preference", "") == "N":
             approach_preference = "None"
-        elif input_obj["wechat_preference"] == "Y" or input_obj["email_preference"] == "Y":
+        elif input_obj.get("wechat_preference", "") == "Y" or input_obj.get("email_preference", "") == "Y":
             approach_preference = "ALL"
         else:
             approach_preference = "RECEIPT_ONLY"
