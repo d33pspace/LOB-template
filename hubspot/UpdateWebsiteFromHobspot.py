@@ -19,8 +19,8 @@ def update_website(input_obj):
     else:
         url = 'https://test2.renewal.org.cn/api/v1/user/update-from-hubspot'
 
-    # if local_mode:
-    #     url = 'http://localhost:8118/v1/user/update-from-hubspot'
+    if local_mode:
+        url = 'http://localhost:8118/v1/user/update-from-hubspot'
 
     headers = {
         'Content-Type': 'application/json',
