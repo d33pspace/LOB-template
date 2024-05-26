@@ -27,12 +27,19 @@ def update_website(input_obj):
         'Authorization': 'API gzWGFkOzdPqrr8DiNYbWJjNGExMDczNmVlNzU3NzoXOTeJDYyz'
     }
     try:
-        if input_obj.get("receipt_preference", "") == "N":
-            approach_preference = "None"
-        elif input_obj.get("wechat_preference", "") == "Y" or input_obj.get("email_preference", "") == "Y":
-            approach_preference = "ALL"
+        receipt_preference = input_obj.get("receipt_preference", "")
+        wechat_preference = input_obj.get("wechat_preference", "")
+        email_preference = input_obj.get("email_preference", "")
+
+        if receipt_preference.lower() == "wechat" or receipt_preference.lower() == "email":
+            if wechat_preference.lower() == "n" or wechat_preference.lower() == "no":
+                approach_preference = "ALL"
+            elif email_preference.lower() == "n" or email_preference.lower() == "no":
+                approach_preference = "ALL"
+            else:
+                approach_preference = "RECEIPT_ONLY"
         else:
-            approach_preference = "RECEIPT_ONLY"
+            approach_preference = "None"
 
         # Construct the new JSON object
         data = json.dumps({
@@ -59,9 +66,9 @@ def update_website(input_obj):
 if local_mode:
     input_data = {
         "email": "12323534522.yoopay@alt.renewal.org.cn",
-        "receipt_preference": "Y",
-        "wechat_preference": "Y",
-        "email_preference": "N",
+        "receipt_preference": "WeChat", # WeChat, email, manual
+        "wechat_preference": "Y",   # No or N means accept WeChat stories
+        "email_preference": "N",   # No or N means accept email stories
         "preferred_language": "zh-cn",
         "receipt_name": "Test Z1",
         "salutation": "et1"
