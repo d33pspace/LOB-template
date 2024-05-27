@@ -32,9 +32,9 @@ def update_website(input_obj):
         email_preference = input_obj.get("email_preference", "")
 
         if receipt_preference.lower() == "wechat" or receipt_preference.lower() == "email":
-            if wechat_preference.lower() == "n" or wechat_preference.lower() == "no":
+            if wechat_preference.lower() in ("n", "no", "f", "false"):
                 approach_preference = "ALL"
-            elif email_preference.lower() == "n" or email_preference.lower() == "no":
+            elif email_preference.lower() in ("n", "no", "f", "false"):
                 approach_preference = "ALL"
             else:
                 approach_preference = "RECEIPT_ONLY"
@@ -68,8 +68,8 @@ if local_mode:
     input_data = {
         "email": "12323534522.yoopay@alt.renewal.org.cn",
         "receipt_preference": "WeChat", # WeChat, email, manual
-        "wechat_preference": "Y",   # No or N means accept WeChat stories
-        "email_preference": "N",   # No or N means accept email stories
+        "wechat_preference": "false",   # No or N means accept WeChat stories
+        "email_preference": "true",   # No or N means accept email stories
         "preferred_language": "zh-cn",
         "receipt_name": "Test Z1",
         "salutation": "et1"
