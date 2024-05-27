@@ -47,7 +47,8 @@ def update_website(input_obj):
             "fullName": input_obj.get("receipt_name", ""),
             "nickname": input_obj.get("salutation", ""),
             "preferredLanguage": input_obj.get("preferred_language", ""),
-            "approachPreference": approach_preference
+            "approachPreference": approach_preference,
+            "zapierInputData": json.dumps(input_obj)
         })
 
         # Make a POST request to the API endpoint with the defined headers and data
