@@ -23,22 +23,24 @@ def send_wechat_message(input_obj):
     try:
         # Construct the text with values from input_obj
         if 'cn' in input_obj.get("preferred_language", ""):
-            text = "{}， {}\n\n捐款者：{}\n捐款日期：{}\n捐款金额：{}\n捐款方式：{}\n捐款编号：{}".format(
+            text = "{}， {}\n\n捐款者：{}\n捐款日期：{}\n捐款金额：{}\n捐款描述：{}\n捐款方式：{}\n捐款编号：{}".format(
                 input_obj.get("salutation", ""),
                 input_obj.get("message", ""),
                 input_obj.get("contributor", ""),
                 input_obj.get("date", ""),
                 input_obj.get("amount", ""),
+                input_obj.get("description", "For most urgent needs"),
                 input_obj.get("method", ""),
                 input_obj.get("reference", "")
             )
         else:
-            text = "{}, {}\n\nContributor: {}\nDate of gift: {}\nAmount: {}\nMethod: {}\nReference: {}".format(
+            text = "{}, {}\n\nContributor: {}\nDate of gift: {}\nAmount: {}\nDescription: {}\nMethod: {}\nReference: {}".format(
                 input_obj.get("salutation", ""),
                 input_obj.get("message", ""),
                 input_obj.get("contributor", ""),
                 input_obj.get("date", ""),
                 input_obj.get("amount", ""),
+                input_obj.get("description", ""),
                 input_obj.get("method", ""),
                 input_obj.get("reference", "")
             )
@@ -74,6 +76,7 @@ if local_mode:
         "method": "Alipay",
         "reference": "REL-808122",
         "salutation": "Edward",
+        "description": "For urgent needs",
         "message": "thank you so much for your gift. You're really doing a lot for people in need at the Renewal Center.",
         "date": "2024-05-01"
     }
