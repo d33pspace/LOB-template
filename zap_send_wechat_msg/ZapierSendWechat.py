@@ -54,7 +54,7 @@ def send_wechat_message(input_obj):
     })
 
     # Try to send the request up to 10 times
-    retry_times = 10
+    retry_times = 25
     error_message = ""
     for attempt in range(retry_times):
         try:
@@ -72,8 +72,8 @@ def send_wechat_message(input_obj):
             print(f"Attempt {attempt + 1} failed with exception: {str(e)}.")
             error_message = f"Attempt {attempt + 1} failed with exception: {str(e)}."
 
-        # Wait for 10 seconds before retrying
-        time.sleep(retry_times)
+        # Wait for 1 seconds before retrying
+        time.sleep(1)
 
     # If all attempts fail, return an error message
     return {"command_id": "", "message": error_message, "code": response.status_code}
