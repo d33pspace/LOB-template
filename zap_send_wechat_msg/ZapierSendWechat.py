@@ -50,6 +50,7 @@ def send_wechat_message(input_obj):
         "phoneNumber": input_obj.get("phone_number", ""),
         "wechatNickname": input_obj.get("wechat_nickname", ""),
         "preferredLanguage": input_obj.get("preferred_language", ""),
+        "reference": input_obj.get("reference", ""),
         "text": text
     })
 
