@@ -17,7 +17,7 @@ def update_website(input_obj):
     if input_obj.get("email", "").endswith("@alt.renewal.org.cn"):
         url = 'https://renewal.deepspace.org.cn/api/v1/user/update-from-hubspot'
     else:
-        url = 'https://test2.renewal.org.cn/api/v1/user/update-from-hubspot'
+        url = 'https://www.renewal.org.cn/api/v1/user/update-from-hubspot'
 
     if local_mode:
         url = 'http://localhost:8118/v1/user/update-from-hubspot'
