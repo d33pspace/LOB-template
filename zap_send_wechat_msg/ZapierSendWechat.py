@@ -24,7 +24,7 @@ def send_wechat_message(input_obj):
 
     # Construct the text with values from input_obj
     if 'cn' in input_obj.get("preferred_language", ""):
-        text = "{}， {}\n\n捐款者：{}\n捐款日期：{}\n捐款金额：{}\n捐款描述：{}\n捐款方式：{}\n捐款编号：{}".format(
+        text = "{}：{}\n\n捐款者：{}\n捐款日期：{}\n捐款金额：{}\n捐款描述：{}\n捐款方式：{}\n捐款编号：{}".format(
             input_obj.get("salutation", ""),
             input_obj.get("message", ""),
             input_obj.get("contributor", ""),
