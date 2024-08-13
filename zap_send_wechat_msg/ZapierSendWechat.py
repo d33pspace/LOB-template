@@ -13,9 +13,11 @@ if "local_mode=true" in sys.argv:
 def send_wechat_message(input_obj):
     response = requests.Response()
 
+    retry_times = 25
     url = 'https://renewal.deepspace.org.cn/api/v1/work-tool/send-message'
     if local_mode:
         url = 'http://localhost:8118/v1/work-tool/send-message'
+        retry_times = 2
 
     headers = {
         'Content-Type': 'application/json',
@@ -23,7 +25,11 @@ def send_wechat_message(input_obj):
     }
 
     # Construct the text with values from input_obj
-    if 'cn' in input_obj.get("preferred_language", ""):
+    is_cn = (
+        True if not input_obj.get("contact_owner", "") and 'cn' in input_obj.get("preferred_language", "")
+        else input_obj.get("contact_owner", "") == "33083949"
+    )
+    if is_cn:
         text = "{}：{}\n\n捐款者：{}\n捐款日期：{}\n捐款金额：{}\n捐款描述：{}\n捐款方式：{}\n捐款编号：{}".format(
             input_obj.get("salutation", ""),
             input_obj.get("message", ""),
@@ -55,7 +61,6 @@ def send_wechat_message(input_obj):
     })
 
     # Try to send the request up to 10 times
-    retry_times = 25
     error_message = ""
     for attempt in range(retry_times):
         try:
@@ -83,10 +88,12 @@ def send_wechat_message(input_obj):
 #
 # main code
 #        "wechat_nickname": "Edward 2865",
+#        "contact_owner": "33083949" is hanson
 if local_mode:
     input_data = {
         "phone_number": "+86 15250982865",
-        "preferred_language": "en-us",
+        "preferred_language": "zh-cn",
+        "contact_owner": "33083949",
         "contributor": "陶小姐",
         "amount": "2.23 CNY",
         "method": "WeChat",
