@@ -55,8 +55,10 @@ def send_wechat_message(input_obj):
     data = json.dumps({
         "phoneNumber": input_obj.get("phone_number", ""),
         "wechatNickname": input_obj.get("wechat_nickname", ""),
+        "contributor": input_obj.get("contributor", ""),
         "preferredLanguage": input_obj.get("preferred_language", ""),
         "reference": input_obj.get("reference", ""),
+        "contactOwnerCn": is_cn,
         "text": text
     })
 
@@ -91,9 +93,9 @@ def send_wechat_message(input_obj):
 #        "contact_owner": "33083949" is hanson
 if local_mode:
     input_data = {
-        "phone_number": "+86 15250982865",
-        "preferred_language": "zh-cn",
-        "contact_owner": "33083949",
+        "phone_number": "+86 15250911111",
+        "preferred_language": "en-us",
+        "contact_owner": "33083949342",
         "contributor": "陶小姐",
         "amount": "2.23 CNY",
         "method": "WeChat",
