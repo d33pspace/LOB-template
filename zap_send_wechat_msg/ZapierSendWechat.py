@@ -15,9 +15,9 @@ def send_wechat_message(input_obj):
 
     retry_times = 25
     url = 'https://renewal.deepspace.org.cn/api/v1/work-tool/send-message'
-    if local_mode:
-        url = 'http://localhost:8118/v1/work-tool/send-message'
-        retry_times = 2
+    # if local_mode:
+    #     url = 'http://localhost:8118/v1/work-tool/send-message'
+    #     retry_times = 2
 
     headers = {
         'Content-Type': 'application/json',
@@ -93,17 +93,17 @@ def send_wechat_message(input_obj):
 #        "contact_owner": "33083949" is hanson
 if local_mode:
     input_data = {
-        "phone_number": "+86 15250911111",
+        "phone_number": "+86 15250982865",
         "preferred_language": "en-us",
         "contact_owner": "33083949342",
-        "contributor": "陶小姐",
-        "amount": "2.23 CNY",
+        "contributor": "Edward Test",
+        "amount": "1.02 CNY",
         "method": "WeChat",
-        "reference": "REL-808122",
+        "reference": "TEST-9999",
         "salutation": "Edward",
-        "description": "测试中文网站",
-        "message": "thank you so much for your recent gift of 2.23 RMB. Your support is amazing, and I really appreciate you. The people at the Renewal Center feel the same way. They are simply amazed when they learn that friends like you care enough to provide, food, warm clothes, training and support to help them start a new life!",
-        "date": "2024-06-05"
+        "description": "When people are struggling, your gift offers real help",
+        "message": "您捐赠的1.02元为人们提供了紧急援助，帮助他们获得重建人生的技能与机会。您的支持至关重要，因此衷心地感谢您！",
+        "date": "2024-08-31"
     }
 
 output = send_wechat_message(input_data)
