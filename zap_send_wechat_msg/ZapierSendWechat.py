@@ -19,9 +19,9 @@ def send_wechat_message(input_obj):
 
     retry_times = 25
     url = 'https://renewal.deepspace.org.cn/api/v1/work-tool/send-message'
-    # if local_mode:
-    #     url = 'http://localhost:8118/v1/work-tool/send-message'
-    #     retry_times = 2
+    if local_mode:
+        url = 'http://localhost:8118/v1/work-tool/send-message'
+        retry_times = 2
 
     headers = {
         'Content-Type': 'application/json',
