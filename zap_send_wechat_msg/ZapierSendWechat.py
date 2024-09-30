@@ -2,6 +2,8 @@
 # V2024-09-30 set to English group if missing contact_owner
 ##############
 
+# https://zapier.com/editor/144538426/draft/144538432/fields
+# https://zapier.com/editor/159365690/published
 import os
 import sys
 import requests
