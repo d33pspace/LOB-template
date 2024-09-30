@@ -17,9 +17,11 @@ if "local_mode=true" in sys.argv:
 def send_wechat_message(input_obj):
     response = requests.Response()
 
+    validation_message = ""
     retry_times = 25
     url = 'https://renewal.deepspace.org.cn/api/v1/work-tool/send-message'
     if local_mode:
+        validation_message += "enable test mode; "
         url = 'http://localhost:8118/v1/work-tool/send-message'
         retry_times = 2
 
@@ -29,7 +31,13 @@ def send_wechat_message(input_obj):
     }
 
     # Construct the text with values from input_obj
-    is_cn = input_obj.get("contact_owner", "") == "33083949"
+    is_cn = False
+    # Check if 'contact_owner' exists in input_obj
+    if "contact_owner" not in input_obj:
+        validation_message += 'missing contact_owner as input; '
+    else:
+        # Set is_cn based on contact_owner's value
+        is_cn = input_obj.get("contact_owner") == "33083949"
 
     if is_cn:
         text = "{}：{}\n\n捐款者：{}\n捐款日期：{}\n捐款金额：{}\n捐款描述：{}\n捐款方式：{}\n捐款编号：{}".format(
@@ -74,7 +82,9 @@ def send_wechat_message(input_obj):
                 return {
                     "command_id": str(response.json().get("command_id", "")),
                     "message": response.json().get("message", ""),
-                    "code": response.status_code
+                    "code": response.status_code,
+                    "validation_message": validation_message,
+                    "data_to_website": data
                 }
             else:
                 print(f"Attempt {attempt + 1} failed with status code {response.status_code}.")
@@ -86,7 +96,8 @@ def send_wechat_message(input_obj):
         time.sleep(1)
 
     # If all attempts fail, return an error message
-    return {"command_id": "", "message": error_message, "code": response.status_code, "data_to_website": data}
+    return {"command_id": "", "message": error_message, "code": response.status_code,
+            "validation_message": validation_message, "data_to_website": data}
 
 
 #
