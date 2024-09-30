@@ -1,3 +1,7 @@
+##############
+# V2024-09-30 set to English group if missing contact_owner
+##############
+
 import os
 import sys
 import requests
@@ -25,10 +29,8 @@ def send_wechat_message(input_obj):
     }
 
     # Construct the text with values from input_obj
-    is_cn = (
-        True if not input_obj.get("contact_owner", "") and 'cn' in input_obj.get("preferred_language", "")
-        else input_obj.get("contact_owner", "") == "33083949"
-    )
+    is_cn = input_obj.get("contact_owner", "") == "33083949"
+
     if is_cn:
         text = "{}：{}\n\n捐款者：{}\n捐款日期：{}\n捐款金额：{}\n捐款描述：{}\n捐款方式：{}\n捐款编号：{}".format(
             input_obj.get("salutation", ""),
@@ -47,7 +49,7 @@ def send_wechat_message(input_obj):
             input_obj.get("contributor", ""),
             input_obj.get("date", ""),
             input_obj.get("amount", ""),
-            input_obj.get("description", ""),
+            input_obj.get("description", "For most urgent needs"),
             input_obj.get("method", ""),
             input_obj.get("reference", "")
         )
@@ -84,7 +86,7 @@ def send_wechat_message(input_obj):
         time.sleep(1)
 
     # If all attempts fail, return an error message
-    return {"command_id": "", "message": error_message, "code": response.status_code}
+    return {"command_id": "", "message": error_message, "code": response.status_code, "data_to_website": data}
 
 
 #
