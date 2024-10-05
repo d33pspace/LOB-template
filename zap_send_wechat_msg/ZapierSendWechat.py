@@ -1,4 +1,5 @@
 ##############
+# V2024-10-05 separate contact_owner and prefer language
 # V2024-09-30 set to English group if missing contact_owner
 ##############
 
@@ -33,15 +34,16 @@ def send_wechat_message(input_obj):
     }
 
     # Construct the text with values from input_obj
-    is_cn = False
+    is_contact_owner_cn = False
     # Check if 'contact_owner' exists in input_obj
     if "contact_owner" not in input_obj:
         validation_message += 'missing contact_owner as input; '
     else:
-        # Set is_cn based on contact_owner's value
-        is_cn = input_obj.get("contact_owner") == "33083949"
+        # Set is_contact_owner_cn based on contact_owner's value
+        is_contact_owner_cn = input_obj.get("contact_owner") == "33083949"
 
-    if is_cn:
+    preferred_language = 'en-us' if 'cn' in input_obj.get("preferred_language", "") else 'zh-cn'
+    if preferred_language == 'zh-cn':
         text = "{}：{}\n\n捐款者：{}\n捐款日期：{}\n捐款金额：{}\n捐款描述：{}\n捐款方式：{}\n捐款编号：{}".format(
             input_obj.get("salutation", ""),
             input_obj.get("message", ""),
@@ -68,9 +70,9 @@ def send_wechat_message(input_obj):
         "phoneNumber": input_obj.get("phone_number", ""),
         "wechatNickname": input_obj.get("wechat_nickname", ""),
         "contributor": input_obj.get("contributor", ""),
-        "preferredLanguage": input_obj.get("preferred_language", ""),
+        "preferredLanguage": preferred_language,
         "reference": input_obj.get("reference", ""),
-        "contactOwnerCn": is_cn,
+        "contactOwnerCn": is_contact_owner_cn,
         "text": text
     })
 
