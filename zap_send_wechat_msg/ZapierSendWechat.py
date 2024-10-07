@@ -42,7 +42,7 @@ def send_wechat_message(input_obj):
         # Set is_contact_owner_cn based on contact_owner's value
         is_contact_owner_cn = input_obj.get("contact_owner") == "33083949"
 
-    preferred_language = 'en-us' if 'cn' in input_obj.get("preferred_language", "") else 'zh-cn'
+    preferred_language = 'zh-cn' if 'cn' in input_obj.get("preferred_language", "") else 'en-us'
     if preferred_language == 'zh-cn':
         text = "{}：{}\n\n捐款者：{}\n捐款日期：{}\n捐款金额：{}\n捐款描述：{}\n捐款方式：{}\n捐款编号：{}".format(
             input_obj.get("salutation", ""),
