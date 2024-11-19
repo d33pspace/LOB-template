@@ -4,60 +4,77 @@ import shutil
 
 
 def adjust_jar_size(original_jar_path, target_size):
-    # Generate the new JAR path by appending "_modified" to the original file name
+    # Define file paths
     file_dir, file_name = os.path.split(original_jar_path)
     base_name, ext = os.path.splitext(file_name)
     new_jar_path = os.path.join(file_dir, f"{base_name}_modified{ext}")
+    filler_file_path = "filler.txt"
 
-    filler_file_name = "filler.txt"
+    # Delete existing filler.txt or modified JAR file if they exist
+    if os.path.exists(filler_file_path):
+        os.remove(filler_file_path)
 
-    # Copy the original JAR file to a new file
+    if os.path.exists(new_jar_path):
+        os.remove(new_jar_path)
+
+    # Copy the original JAR file to a new file (ensure the original remains untouched)
     shutil.copy(original_jar_path, new_jar_path)
 
     # Get the current size of the new JAR
     current_size = os.path.getsize(new_jar_path)
-
-    # Calculate initial padding size
-    padding_size = target_size - current_size
-    if padding_size <= 0:
-        print("Target size is less than or equal to the current size. No adjustment needed.")
-        return
-
     print(f"Original JAR path: {original_jar_path}")
     print(f"New JAR path: {new_jar_path}")
     print(f"Current size: {current_size} bytes")
     print(f"Target size: {target_size} bytes")
 
-    while current_size != target_size:
-        # Adjust padding size based on difference
-        padding_size = target_size - current_size
+    # Initial padding size (reduce by 100 bytes)
+    initial_padding_size = target_size - current_size - 100
+    if initial_padding_size > 0:
+        # Create filler.txt with the calculated initial padding size
+        with open(filler_file_path, "w") as filler_file:
+            filler_file.write("A" * initial_padding_size)
 
-        if padding_size <= 0:
-            print("Padding size went negative. Cannot achieve target size.")
-            break
-
-        # Create a filler text file with the adjusted padding size
-        with open(filler_file_name, "w") as filler_file:
-            filler_file.write("A" * padding_size)
-
-        # Add the filler file to the new JAR
         with zipfile.ZipFile(new_jar_path, 'a') as jar:
-            jar.write(filler_file_name, filler_file_name)
+            # Add filler.txt to the JAR file (it will be added only once)
+            jar.write(filler_file_path, "filler.txt")
 
-        # Remove the temporary filler file
-        os.remove(filler_file_name)
-
-        # Check the new size
         current_size = os.path.getsize(new_jar_path)
-        print(f"Updated size: {current_size} bytes")
+        print(f"After initial padding: {current_size} bytes")
 
-        # Break if the size matches
-        if current_size == target_size:
-            print(f"New JAR successfully adjusted to target size: {current_size} bytes")
-            return
+    # Fine-tune the size by adding 1 byte at a time
+    loop_count = 1
+    while current_size < target_size:
+        # Delete the modified JAR file each time to ensure a fresh start
+        if os.path.exists(new_jar_path):
+            os.remove(new_jar_path)
 
-    print(f"Failed to achieve the exact target size. Current size: {current_size} bytes")
+        # Copy the original JAR again to start with a clean file
+        shutil.copy(original_jar_path, new_jar_path)
+
+        # Overwrite filler.txt with the loop count index and write to it
+        with open(filler_file_path, "a") as filler_file:
+            filler_file.write(f"{loop_count}")  # Add loop count to the file
+
+        with zipfile.ZipFile(new_jar_path, 'a') as jar:  # 'a' mode to append to the JAR
+            # Re-add filler.txt to the JAR file, overwriting previous entries
+            jar.write(filler_file_path, "filler.txt")
+
+        # Update the current size of the JAR
+        current_size = os.path.getsize(new_jar_path)
+        print(f"After adding {loop_count} byte(s): {current_size} bytes")
+
+        # Increment loop count for next iteration
+        loop_count += 1
+
+    # Final check
+    if current_size == target_size:
+        print(f"New JAR successfully adjusted to target size: {current_size} bytes")
+    else:
+        print(f"Failed to achieve the exact target size. Current size: {current_size} bytes")
 
 
 # Example usage
 adjust_jar_size("jxbrowser-7.39.2.jar", 13786342)
+adjust_jar_size("jxbrowser-javafx-7.39.2.jar", 231616)
+adjust_jar_size("jxbrowser-swing-7.39.2.jar", 201290)
+adjust_jar_size("jxbrowser-win32-7.39.2.jar", 98108945)
