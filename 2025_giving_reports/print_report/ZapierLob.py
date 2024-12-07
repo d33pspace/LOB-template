@@ -76,7 +76,7 @@ def compose_html():
     salutation = contactName if salutation is None or salutation == "" else salutation
 
     public_page_url = "https://d33pspace.github.io/LOB-template"
-    main_template_url = f'{public_page_url}/2024_01_reports/print_report/print_report_no_photo.html'
+    main_template_url = f'{public_page_url}/2025_giving_reports/print_report/print_report_no_photo.html'
 
     main_html_template = read_resource(main_template_url)
 
@@ -163,7 +163,7 @@ def upload_string_to_ftp(host, username, password, html_string, remote_file_path
 ftp_host = 'renewal365.org'
 ftp_username = 'connect@renewal365.org'
 ftp_password = 'A6%hJ!xGea'
-remote_html_directory = '/donorreport/templates/2024_lob_reports/'
+remote_html_directory = '/donorreport/templates/2025_lob_reports/'
 
 if local_mode:
     read_json_object = read_resource("input.json")
@@ -186,12 +186,12 @@ output = {}
 if "contactName" in jsonObject:
     html_content, count_of_line_items = compose_html()
 
-    # https://renewal365.org/images/donorreport/templates/2024_lob_reports/0116_contactName.html
+    # https://renewal365.org/images/donorreport/templates/2025_lob_reports/0116_contactName.html
     random_chars = str(uuid.uuid4())[:6]
     html_file_name = datetime.now().strftime("%m%d") + "_" + contains_only_halfwidth_characters(input_data["salutation"]) + "_" + random_chars + ".html"
     remote_html_file_path = f"{remote_html_directory}{html_file_name}"
     error = upload_string_to_ftp(ftp_host, ftp_username, ftp_password, html_content, remote_html_file_path)
-    ftp_html_path = f"https://renewal365.org/images/donorreport/templates/2024_lob_reports/{html_file_name}"
+    ftp_html_path = f"https://renewal365.org/images/donorreport/templates/2025_lob_reports/{html_file_name}"
 
     if (error is None or error == '') and count_of_line_items > 15:
         error = f"count_of_line_items is {count_of_line_items} which exceed the frame"

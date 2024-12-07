@@ -2,18 +2,25 @@ import os
 import sys
 import requests
 import json
+import uuid
+from ftplib import FTP, error_perm
 from datetime import datetime
+from io import BytesIO
+import unicodedata
 
+
+preferred_language = 'en'
 local_mode = False  # True or False
 if "local_mode=true" in sys.argv:
     local_mode = True
 
 
-def translate_description(description):
-    lower_cased_description = description.lower()
-    if preferred_language != 'en' and lower_cased_description == 'for most urgent needs':
-        description = '为最急需帮助的人们'
-    return description
+def contains_only_halfwidth_characters(input_string):
+    for char in input_string:
+        # Check if the character is a half-width character
+        if unicodedata.east_asian_width(char) != 'Na' and unicodedata.east_asian_width(char) != 'F':
+            return ""
+    return input_string
 
 
 def format_date_of_gift(date_string):
@@ -28,28 +35,7 @@ def format_date_of_gift(date_string):
     return formatted_date
 
 
-def translate_payment_method(payment_method, reference=None):
-    lower_cased_payment_method = payment_method.lower()
-    if preferred_language != 'en':
-        translation_dict = {
-            'alipay': '支付宝',
-            'wire': '电汇',
-            'bank transfer': '银行转账',
-            'paypal': '贝宝',
-            'wechat': '微信',
-            'stripe': '信用卡',
-            'check': '支票',
-            'yoopay': '友付'
-        }
-        payment_method = translation_dict.get(lower_cased_payment_method, payment_method)
-
-    if lower_cased_payment_method == 'check':
-        payment_method = f'{payment_method} #{reference}'
-    return payment_method
-
-
 def translate_currency(currency_set, currency=None):
-
     if len(currency_set) > 1:
         return 'USD' if preferred_language == 'en' else '美元'
 
@@ -83,119 +69,153 @@ def read_resource(url):
     return content
 
 
-# Method to generate the full giving report in English
-def generate_giving_report_english(contact_name, line_items):
-    # Extract the contact name for salutation (first name)
-    salutation = contact_name.split()[0]
+def compose_html():
+    from_email = 'connect@renewal.org.cn'
+    contactName = jsonObject["contactName"]
+    salutation = input_data["salutation"]
+    salutation = contactName if salutation is None or salutation == "" else salutation
 
-    # Define the letter body text in English
-    letter_body = "We are pleased to provide you with a summary of your 2024 giving record below."
+    public_page_url = "https://d33pspace.github.io/LOB-template"
+    main_template_url = f'{public_page_url}/2025_giving_reports/print_report/print_report_no_photo.html'
 
-    # Initialize the full report content
-    full_report = f"Dear {salutation},\n\n{letter_body}\n\nYour 2024 giving record:\n"
+    main_html_template = read_resource(main_template_url)
 
-    # Iterate over the sorted line items and format them into the desired template
-    for item in line_items:
-        invoice_date = format_date_of_gift(item['invoiceDate'])
-        amount = f"${float(item['invoiceTotalUSD']):,.2f}"
-        reference = item['reference'] if item['reference'] else None  # Reference is None if not available
-        description = item['description']
+    unique_currencies = set()
+    invoiceTotalUSD_Count = 0
+    unitPriceSource_Count = 0
+    for line_item in jsonObject['lineItems']:
+        unique_currencies.add(line_item['originalCurrency'])
+        invoiceTotalUSD_Count += float(line_item['invoiceTotalUSD'])
+        unitPriceSource_Count += float(line_item['unitPriceSource'])
 
-        # Append each gift to the report content
-        full_report += f"\nDate of gift: {invoice_date}\nAmount: {amount}\n"
+    line_item_template_to_use = "<tr><td><p>{{date}}</p></td><td><p>{{reference}}</p></td>" \
+                                "<td><p>{{amount}}</p></td><td><p>{{currency}}</p></td></tr>"
 
-        # Only include the reference if it's not None or "N/A"
-        if reference and reference != "N/A":
-            full_report += f"Reference: {reference}\n"
-
-        # Append the description regardless of reference presence
-        full_report += f"Description: {description}\n"
-
-    return full_report
-
-
-# Method to generate the full giving report in Chinese
-def generate_giving_report_chinese(contact_name, line_items):
-    # Extract the contact name for salutation (first name)
-    salutation = contact_name.split()[0]
-
-    # Define the letter body text in Chinese
-    letter_body = "我们很高兴为您提供2024年度的捐赠记录。"
-
-    # Initialize the full report content
-    full_report = f"亲爱的 {salutation},\n\n{letter_body}\n\n您的2024年度捐赠记录如下：\n"
-
-    # Iterate over the sorted line items and format them into the desired template
-    for item in line_items:
-        invoice_date = format_date_of_gift(item['invoiceDate'])
-        amount = f"¥{float(item['invoiceTotalUSD']):,.2f}"  # Convert USD to CNY symbol
-        reference = item['reference'] if item['reference'] else None
-        description = item['description']
-
-        # Append each gift to the report content
-        full_report += f"\n捐赠日期: {invoice_date}\n捐赠金额: {amount}\n"
-
-        # Only include the reference if it's not None or "N/A"
-        if reference and reference != "N/A":
-            full_report += f"参考: {reference}\n"
-
-        # Append the description regardless of reference presence
-        full_report += f"描述: {description}\n"
-
-    return full_report
-
-
-# Main logic to load JSON and generate the appropriate report
-def generate_report():
-    # Read the JSON object from input_data
-    read_json_object = json.loads(input_data["json_object"])
-    salutation = input_data["salutation"] or read_json_object.get("contactName", "").split()[
-        0]  # Use input salutation or first name from contactName
-
-    # Sort the line items by invoice date before passing them to the method
-    line_items_sorted = sorted(read_json_object['lineItems'],
-                               key=lambda x: datetime.strptime(x['invoiceDate'], '%m/%d/%Y'))
-
-    # Generate the report based on the preferred language
-    if preferred_language == "en":
-        # Generate report in English
-        # print("Generate report in English")
-        full_report = generate_giving_report_english(salutation, line_items_sorted)
+    amount_format = "{:,.2f}"
+    total_giving = "{:,.2f} {}"
+    if len(unique_currencies) == 1:
+        total_giving = total_giving.format(unitPriceSource_Count, translate_currency(unique_currencies))
     else:
-        # Generate report in Chinese
-        # print("Generate report in Chinese")
-        full_report = generate_giving_report_chinese(salutation, line_items_sorted)
+        total_giving = total_giving.format(invoiceTotalUSD_Count, translate_currency(unique_currencies))
 
-    return full_report
+    # List to store generated HTML content
+    line_items_content_array = []
+
+    # Iterate through each line item in the JSON object
+    for line_item in jsonObject['lineItems']:
+        # Replace placeholders in the HTML template with values from the JSON object
+        temp_html_content = line_item_template_to_use.replace('{{date}}',
+                                                              format_date_of_gift(line_item['invoiceDate']))
+        temp_html_content = temp_html_content.replace('{{reference}}',
+                                                      line_item['invoiceNumber'].replace("INV", "RWL"))
+        temp_html_content = temp_html_content.replace('{{amount}}',
+                                                      amount_format.format(float(line_item['unitPriceSource'])))
+        temp_html_content = temp_html_content.replace('{{currency}}',
+                                                      translate_currency({}, line_item['originalCurrency']))
+
+        # Append the generated HTML content to the list
+        line_items_content_array.append(temp_html_content)
+
+    # Concatenate all HTML contents into one string
+    line_items_html_content = "\n".join(line_items_content_array)
+
+    main_html_content = main_html_template.replace('{{202401_report_salutation}}', salutation)
+    main_html_content = main_html_content.replace('{{202401_report_line_items}}', line_items_html_content)
+    main_html_content = main_html_content.replace('{{202401_report_total_giving}}', total_giving)
+
+    if local_mode:
+        output_file_name = f'test_email.html'
+        with open(output_file_name, 'w', encoding='utf-8') as output_file:
+            output_file.write(main_html_content)
+        print(f'The final HTML content has been written to {output_file_name}')
+
+    return main_html_content, len(line_items_content_array)
+
+
+def upload_string_to_ftp(host, username, password, html_string, remote_file_path):
+    ftp_error = ""
+    try:
+        # Connect to the FTP server
+        with FTP(host) as ftp:
+            # Login to the FTP server
+            ftp.login(username, password)
+
+            # Split the path into directory and filename
+            *dirs, filename = remote_file_path.split('/')
+
+            # Navigate to or create the remote directories
+            for dir_part in dirs:
+                try:
+                    ftp.cwd(dir_part)  # Try to navigate into the directory
+                except error_perm:
+                    # Directory does not exist; create it
+                    ftp.mkd(dir_part)
+                    ftp.cwd(dir_part)
+
+            # Convert the string to bytes
+            html_bytes = html_string.encode('utf-8')
+
+            # Open a BytesIO object as a file-like object
+            html_file = BytesIO(html_bytes)
+
+            # Upload the file to the FTP server
+            ftp.storbinary(f'STOR {remote_file_path}', html_file)
+
+        print(f"Uploaded to '{remote_file_path}' on FTP server.")
+    except Exception as ftp_ex:
+        print(f"FTP Error: {ftp_ex}")
+        ftp_error = f"FTP Error: {ftp_ex}"
+
+    return ftp_error
 
 
 #
 # main code
 #
+ftp_host = 'renewal365.org'
+ftp_username = 'connect@renewal365.org'
+ftp_password = 'A6%hJ!xGea'
+remote_html_directory = '/donorreport/templates/2025_wechat_reports/'
+
 if local_mode:
-    local_read_json_object = read_resource("input.json")
+    read_json_object = read_resource("input_2page.json")
     # read_json_object = json.dumps(read_resource("input.json"))
     input_data = {
-        "json_object": local_read_json_object,
-        "preferred_language": "en-us",
-        "phone": "1555550000",
-        "salutation": "salu123"
+        "json_object": read_json_object,
+        "salutation": "Amadeus"
     }
 
-preferred_language = 'zh' if "preferred_language" in input_data and 'zh' in input_data["preferred_language"] else 'en'
 jsonObject = {}
-final_text_report = ''
 json_error = ''
-# try:
-final_text_report = generate_report()
-print(final_text_report)
-# except ValueError as e:
-#     # Handle the exception when the JSON string is not valid
-#     json_error = f"Error decoding JSON: {e}"
-#     print(json_error)
+try:
+    # Try to parse the JSON string
+    jsonObject = json.loads(input_data["json_object"])
+except ValueError as e:
+    # Handle the exception when the JSON string is not valid
+    json_error = f"Error decoding JSON: {e}"
 
 output = {}
 if "contactName" in jsonObject:
-    output = {"wechat_report": final_text_report, "contactName": jsonObject['contactName']}
+    html_content, count_of_line_items = compose_html()
+
+    # https://renewal365.org/images/donorreport/templates/2025_wechat_reports/0116_contactName.html
+    random_chars = str(uuid.uuid4())[:6]
+    html_file_name = datetime.now().strftime("%m%d") + "_" + contains_only_halfwidth_characters(input_data["salutation"]) + "_" + random_chars + ".html"
+    remote_html_file_path = f"{remote_html_directory}{html_file_name}"
+    error = upload_string_to_ftp(ftp_host, ftp_username, ftp_password, html_content, remote_html_file_path)
+    ftp_html_path = f"https://renewal365.org/images/donorreport/templates/2025_wechat_reports/{html_file_name}"
+
+    info = f"count_of_line_items is {count_of_line_items} for {input_data['salutation']}"
+
+    output = {"ftp_html_path": ftp_html_path, "error": error, "info": info}
 else:
     output = {"error": json_error}
+
+if local_mode:
+    print(output)
+
+# https://renewal365.org/images/donorreport/templates/2025_wechat_reports/1206_Amadeus_3c08f5.html
+
+#print btn https://renewal365.org/images/donorreport/templates/2025_wechat_reports/1207_Amadeus_1d8b24.html
+
+# 2 pages  https://renewal365.org/images/donorreport/templates/2025_wechat_reports/1207_Amadeus_dff1e4.html

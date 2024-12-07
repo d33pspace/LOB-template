@@ -91,9 +91,9 @@ def compose_html():
     salutation = contactName if salutation is None or salutation == "" else salutation
 
     public_page_url = "https://d33pspace.github.io/LOB-template"
-    main_template_url = f'{public_page_url}/2024_01_reports/email/email_report_{preferred_language}.html'
-    email_report_en_line_item_multi_currency_url = f'{public_page_url}/2024_01_reports/email/email_report_{preferred_language}_line_item_multi_currency_template.html'
-    email_report_en_line_item_single_currency_url = f'{public_page_url}/2024_01_reports/email/email_report_{preferred_language}_line_item_single_currency_template.html'
+    main_template_url = f'{public_page_url}/2025_giving_reports/email/email_report_{preferred_language}.html'
+    email_report_en_line_item_multi_currency_url = f'{public_page_url}/2025_giving_reports/email/email_report_{preferred_language}_line_item_multi_currency_template.html'
+    email_report_en_line_item_single_currency_url = f'{public_page_url}/2025_giving_reports/email/email_report_{preferred_language}_line_item_single_currency_template.html'
 
     main_html_template = read_resource(main_template_url)
     email_report_en_line_item_multi_currency_template = read_resource(email_report_en_line_item_multi_currency_url)
@@ -159,7 +159,7 @@ def compose_html():
     email_subject = '您的2023捐赠报告' if preferred_language == 'zh' else 'Your 2023 giving report'
 
     if local_mode:
-        output_file_name = f'test_{preferred_language}.html'
+        output_file_name = f'test_{preferred_language}_{salutation}_{len(unique_currencies)}.html'
         with open(output_file_name, 'w', encoding='utf-8') as output_file:
             output_file.write(main_html_content)
         print(f'The final HTML content has been written to {output_file_name}')
