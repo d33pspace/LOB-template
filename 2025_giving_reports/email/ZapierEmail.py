@@ -156,7 +156,7 @@ def compose_html():
     main_html_content = main_html_content.replace('{{ inline_postal_address }}',
                                                   '548 Market St # 54802, San Francisco CA, 94104, USA')
 
-    email_subject = '您的2023捐赠报告' if preferred_language == 'zh' else 'Your 2023 giving report'
+    email_subject = '您的2024捐赠报告' if preferred_language == 'zh' else 'Your 2024 giving report'
 
     if local_mode:
         output_file_name = f'test_{preferred_language}_{salutation}_{len(unique_currencies)}.html'
@@ -164,7 +164,7 @@ def compose_html():
             output_file.write(main_html_content)
         print(f'The final HTML content has been written to {output_file_name}')
 
-    return {"email_content": main_html_content, "email_subject": email_subject}
+    return {"email_content": main_html_content, "email_subject": email_subject, "line_items_count": len(line_items_content_array)}
 
 
 #
