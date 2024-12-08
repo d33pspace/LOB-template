@@ -1,3 +1,6 @@
+##############
+# V2024-12-08 init version of WeChat giving report
+##############
 import os
 import sys
 import requests
@@ -7,6 +10,8 @@ from ftplib import FTP, error_perm
 from datetime import datetime
 from io import BytesIO
 import unicodedata
+import time
+
 
 local_mode = False  # True or False
 if "local_mode=true" in sys.argv:
@@ -214,6 +219,81 @@ def upload_string_to_ftp(host, username, password, html_string, remote_file_path
     return ftp_error
 
 
+def send_wechat_message(input_obj):
+    response = requests.Response()
+
+    validation_message = ""
+    retry_times = 20
+    url = 'https://renewal.deepspace.org.cn/api/v1/work-tool/send-message?type=giving-report'
+    if local_mode:
+        validation_message += "enable test mode; "
+        url = 'http://localhost:8118/v1/work-tool/send-message'
+        retry_times = 2
+
+    headers = {
+        'Content-Type': 'application/json',
+        'Authorization': 'API gzWGFkOzdPqrr8DiNYbWJjNGExMDczNmVlNzU3NzoXOTeJDYyz'
+    }
+
+    # Construct the text with values from input_obj
+    is_contact_owner_cn = False
+    # Check if 'contact_owner' exists in input_obj
+    if "contact_owner" not in input_obj:
+        validation_message += 'missing contact_owner as input; '
+    else:
+        # Set is_contact_owner_cn based on contact_owner's value
+        is_contact_owner_cn = input_obj.get("contact_owner") == "33083949"
+
+    language_in_method = 'zh-cn' if 'cn' in input_obj.get("preferred_language", "") else 'en-us'
+    if language_in_method == 'zh-cn':
+        text = "{}：感谢您2024年对日新中心慷慨的捐赠，请查看您这一年的捐赠记录 {}".format(
+            input_obj.get("salutation", ""),
+            input_obj.get("ftp_html_path", "")
+        )
+    else:
+        text = "{}, thank you for your generous donation to Renewal in 2024, here is the records {}".format(
+            input_obj.get("salutation", ""),
+            input_obj.get("ftp_html_path", "")
+        )
+
+    data = json.dumps({
+        "phoneNumber": input_obj.get("phone_number", ""),
+        "wechatNickname": input_obj.get("wechat_nickname", ""),
+        "contributor": input_obj.get("contributor", ""),
+        "preferredLanguage": language_in_method,
+        "reference": input_obj.get("reference", ""),
+        "contactOwnerCn": is_contact_owner_cn,
+        "text": text
+    })
+
+    # Try to send the request up to 10 times
+    error_message = ""
+    for attempt in range(retry_times):
+        try:
+            response = requests.post(url, headers=headers, data=data)
+            if response.status_code == 200:
+                # If the request is successful, return the response
+                return {
+                    "command_id": str(response.json().get("command_id", "")),
+                    "message": response.json().get("message", ""),
+                    "code": response.status_code,
+                    "validation_message": validation_message,
+                    "data_to_website": data
+                }
+            else:
+                print(f"Attempt {attempt + 1} failed with status code {response.status_code}.")
+        except Exception as e:
+            print(f"Attempt {attempt + 1} failed with exception: {str(e)}.")
+            error_message = f"Attempt {attempt + 1} failed with exception: {str(e)}."
+
+        # Wait for 1 second before retrying
+        time.sleep(1)
+
+    # If all attempts fail, return an error message
+    return {"command_id": "", "message": error_message, "code": response.status_code,
+            "validation_message": validation_message, "data_to_website": data}
+
+
 #
 # main code
 #
@@ -225,6 +305,11 @@ if local_mode:
     read_json_object = read_resource("input.json")
     # read_json_object = json.dumps(read_resource("input.json"))
     input_data = {
+        ##### new starts
+        "phone_number": "+86 15250982865",
+        "contact_owner": "33083949342",
+        "contributor": "Edward Test",
+        #### new ends
         "json_object": read_json_object,
         "preferred_language": "en-us",
         "mail_to": "edwazhao@hotmail.com",
@@ -247,16 +332,20 @@ if "contactName" in jsonObject:
 
     # https://renewal365.org/images/donorreport/templates/2025_wechat_reports/0116_contactName.html
     random_chars = str(uuid.uuid4())[:6]
-    html_file_name = datetime.now().strftime("%m%d") + "_" + contains_only_halfwidth_characters(input_data["salutation"]) + "_" + random_chars + ".html"
+    html_file_name = datetime.now().strftime("%m%d") + "_" + random_chars + "_" + contains_only_halfwidth_characters(input_data["salutation"]) + ".html"
     remote_html_file_path = f"{remote_html_directory}{html_file_name}"
     error = upload_string_to_ftp(ftp_host, ftp_username, ftp_password, html_content, remote_html_file_path)
     ftp_html_path = f"https://renewal365.org/images/donorreport/templates/2025_wechat_reports/{html_file_name}"
 
     info = f"count_of_line_items is {count_of_line_items} for {input_data['salutation']}"
 
-    output = {"ftp_html_path": ftp_html_path, "error": error, "info": info}
+    input_obj = {**input_data, "ftp_html_path": ftp_html_path}
+    wechat_response = send_wechat_message(input_obj)
+
+    output = {**wechat_response, "ftp_html_path": ftp_html_path, "error": error, "info": info}
 else:
     output = {"error": output_error}
 
+output = {**output, **input_data}
 if local_mode:
     print(output)
