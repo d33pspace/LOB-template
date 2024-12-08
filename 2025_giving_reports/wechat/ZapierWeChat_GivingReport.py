@@ -23,6 +23,15 @@ def contains_only_halfwidth_characters(input_string):
     return input_string
 
 
+def get_main_template(public_page_url):
+    if preferred_language != 'en':
+        main_template = f'{public_page_url}/2025_giving_reports/wechat/wechat_template_cn.html'
+    else:
+        main_template = f'{public_page_url}/2025_giving_reports/wechat/wechat_template_en.html'
+        # ("%m/%d/%Y")
+    return main_template
+
+
 def format_date_of_gift(date_string):
     parsed_date = datetime.strptime(date_string, "%m/%d/%Y")
 
@@ -76,7 +85,7 @@ def compose_html():
     salutation = contactName if salutation is None or salutation == "" else salutation
 
     public_page_url = "https://d33pspace.github.io/LOB-template"
-    main_template_url = f'{public_page_url}/2025_giving_reports/print_report/print_report_no_photo.html'
+    main_template_url = get_main_template(public_page_url)
 
     main_html_template = read_resource(main_template_url)
 
@@ -185,6 +194,7 @@ if local_mode:
         "salutation": "Amadeus"
     }
 
+preferred_language = 'zh' if "preferred_language" in input_data and 'zh' in input_data["preferred_language"] else 'en'
 jsonObject = {}
 json_error = ''
 try:
