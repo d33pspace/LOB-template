@@ -224,12 +224,13 @@ def send_wechat_message(input_obj):
 
     validation_message = ""
     retry_times = 20
-    url = 'https://renewal.deepspace.org.cn/api/v1/work-tool/send-message?type=giving-report'
+    domain = 'https://renewal.deepspace.org.cn/api'
     if local_mode:
         validation_message += "enable test mode; "
-        url = 'http://localhost:8118/v1/work-tool/send-message'
+        domain = 'http://localhost:8118'
         retry_times = 2
 
+    url = domain + "/v1/work-tool/send-message?wechatRequestType=GIVING_REPORT"
     headers = {
         'Content-Type': 'application/json',
         'Authorization': 'API gzWGFkOzdPqrr8DiNYbWJjNGExMDczNmVlNzU3NzoXOTeJDYyz'
@@ -308,7 +309,7 @@ if local_mode:
         ##### new starts
         "phone_number": "+86 15250982865",
         "contact_owner": "33083949342",
-        "contributor": "Edward Test",
+        "contributor": "Edward Test", # full name
         #### new ends
         "json_object": read_json_object,
         "preferred_language": "en-us",
