@@ -211,7 +211,7 @@ def upload_string_to_ftp(host, username, password, html_string, remote_file_path
             # Upload the file to the FTP server
             ftp.storbinary(f'STOR {remote_file_path}', html_file)
 
-        print(f"Uploaded to '{remote_file_path}' on FTP server.")
+        print(f"Uploaded to 'https://renewal365.org/images{remote_file_path}' on FTP server.")
     except Exception as ftp_ex:
         print(f"FTP Error: {ftp_ex}")
         ftp_error = f"FTP Error: {ftp_ex}"
@@ -309,12 +309,12 @@ if local_mode:
         ##### new starts
         "phone_number": "+86 15250982865",
         "contact_owner": "33083949342",
-        "contributor": "Edward Test", # full name
+        "contributor": "User Test", # full name
         #### new ends
         "json_object": read_json_object,
-        "preferred_language": "en-us",
-        "mail_to": "edwazhao@hotmail.com",
-        "salutation": "xxx"
+        "preferred_language": "en-us", #
+        "mail_to": "test-user@renewal.com",
+        "salutation": "TestUser"
     }
 
 preferred_language = 'zh' if "preferred_language" in input_data and 'zh' in input_data["preferred_language"] else 'en'
