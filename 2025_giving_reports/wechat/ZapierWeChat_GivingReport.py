@@ -211,7 +211,7 @@ def upload_string_to_ftp(host, username, password, html_string, remote_file_path
             # Upload the file to the FTP server
             ftp.storbinary(f'STOR {remote_file_path}', html_file)
 
-        print(f"Uploaded to 'https://renewal365.org/images{remote_file_path}' on FTP server.")
+        print(f"Uploaded to 'https://renewal365.org{remote_file_path}' on FTP server.")
     except Exception as ftp_ex:
         print(f"FTP Error: {ftp_ex}")
         ftp_error = f"FTP Error: {ftp_ex}"
@@ -299,9 +299,9 @@ def send_wechat_message(input_obj):
 # main code
 #
 ftp_host = 'renewal365.org'
-ftp_username = 'connect@renewal365.org'
+ftp_username = 'edwazhao@renewal365.org'
 ftp_password = 'A6%hJ!xGea'
-remote_html_directory = '/donorreport/templates/2025_wechat_reports/'
+remote_html_directory = '/givingreport/2025/'
 if local_mode:
     read_json_object = read_resource("input.json")
     # read_json_object = json.dumps(read_resource("input.json"))
@@ -331,12 +331,13 @@ output = {}
 if "contactName" in jsonObject:
     html_content, count_of_line_items = compose_html()
 
-    # https://renewal365.org/images/donorreport/templates/2025_wechat_reports/0116_contactName.html
+    # https://renewal365.org/givingreport/2025/0116_contactName.html
     random_chars = str(uuid.uuid4())[:6]
-    html_file_name = datetime.now().strftime("%m%d") + "_" + random_chars + "_" + contains_only_halfwidth_characters(input_data["salutation"]) + ".html"
+    #html_file_name = datetime.now().strftime("%m%d") + "_" + random_chars + "_" + contains_only_halfwidth_characters(input_data["salutation"]) + ".html"
+    html_file_name = random_chars + "_" + contains_only_halfwidth_characters(input_data["salutation"]) + ".html"
     remote_html_file_path = f"{remote_html_directory}{html_file_name}"
     error = upload_string_to_ftp(ftp_host, ftp_username, ftp_password, html_content, remote_html_file_path)
-    ftp_html_path = f"https://renewal365.org/images/donorreport/templates/2025_wechat_reports/{html_file_name}"
+    ftp_html_path = f"https://renewal365.org{remote_html_directory}{html_file_name}"
 
     info = f"count_of_line_items is {count_of_line_items} for {input_data['salutation']}"
 
