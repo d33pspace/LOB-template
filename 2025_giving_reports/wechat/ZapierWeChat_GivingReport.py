@@ -219,18 +219,18 @@ def upload_string_to_ftp(host, username, password, html_string, remote_file_path
     return ftp_error
 
 
-def send_wechat_message(input_obj):
+def send_report_to_website(input_obj):
     response = requests.Response()
 
     validation_message = ""
     retry_times = 20
-    domain = 'https://renewal.deepspace.org.cn/api'
+    domain = 'https://renewal.org.cn/api'
     if local_mode:
         validation_message += "enable test mode; "
         domain = 'http://localhost:8118'
-        retry_times = 2
+        retry_times = 1
 
-    url = domain + "/v1/work-tool/send-message?wechatRequestType=GIVING_REPORT"
+    url = domain + "/v1/report/giving-report"
     headers = {
         'Content-Type': 'application/json',
         'Authorization': 'API gzWGFkOzdPqrr8DiNYbWJjNGExMDczNmVlNzU3NzoXOTeJDYyz'
@@ -259,10 +259,10 @@ def send_wechat_message(input_obj):
 
     data = json.dumps({
         "phoneNumber": input_obj.get("phone_number", ""),
-        "wechatNickname": input_obj.get("wechat_nickname", ""),
+        # "wechatNickname": input_obj.get("wechat_nickname", ""),
         "contributor": input_obj.get("contributor", ""),
         "preferredLanguage": language_in_method,
-        "reference": input_obj.get("reference", ""),
+        # "reference": input_obj.get("reference", ""),
         "contactOwnerCn": is_contact_owner_cn,
         "text": text
     })
@@ -275,8 +275,8 @@ def send_wechat_message(input_obj):
             if response.status_code == 200:
                 # If the request is successful, return the response
                 return {
-                    "command_id": str(response.json().get("command_id", "")),
                     "message": response.json().get("message", ""),
+                    "hint": f"Please visit link {domain}/v1/report/public/giving-report to download the report after all Zaps are processed.",
                     "code": response.status_code,
                     "validation_message": validation_message,
                     "data_to_website": data
@@ -342,7 +342,7 @@ if "contactName" in jsonObject:
     info = f"count_of_line_items is {count_of_line_items} for {input_data['salutation']}"
 
     input_obj = {**input_data, "ftp_html_path": ftp_html_path}
-    wechat_response = send_wechat_message(input_obj)
+    wechat_response = send_report_to_website(input_obj)
 
     output = {**wechat_response, "ftp_html_path": ftp_html_path, "error": error, "info": info}
 else:
