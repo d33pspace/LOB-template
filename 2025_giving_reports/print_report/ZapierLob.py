@@ -127,7 +127,7 @@ def compose_html():
     main_html_content = main_html_content.replace('{{202401_report_total_giving}}', total_giving)
 
     if local_mode:
-        output_file_name = f'test_email.html'
+        output_file_name = f'test_lob.html'
         with open(output_file_name, 'w', encoding='utf-8') as output_file:
             output_file.write(main_html_content)
         print(f'The final HTML content has been written to {output_file_name}')
