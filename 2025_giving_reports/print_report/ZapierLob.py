@@ -1,9 +1,12 @@
+##############
+# V2024-12-16 report
+##############
 import os
 import sys
 import requests
 import json
 import uuid
-from ftplib import FTP
+from ftplib import FTP, error_perm
 from datetime import datetime
 from io import BytesIO
 import unicodedata
@@ -139,6 +142,18 @@ def upload_string_to_ftp(host, username, password, html_string, remote_file_path
         with FTP(host) as ftp:
             # Login to the FTP server
             ftp.login(username, password)
+
+            # Split the path into directory and filename
+            *dirs, filename = remote_file_path.split('/')
+
+            # Navigate to or create the remote directories
+            for dir_part in dirs:
+                try:
+                    ftp.cwd(dir_part)  # Try to navigate into the directory
+                except error_perm:
+                    # Directory does not exist; create it
+                    ftp.mkd(dir_part)
+                    ftp.cwd(dir_part)
 
             # Convert the string to bytes
             html_bytes = html_string.encode('utf-8')
