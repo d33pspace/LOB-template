@@ -65,6 +65,7 @@ def read_resource(url):
         response = requests.get(url)
         content = response.text
 
+    print(f'read_resource from {url} with content {content[:100]}')
     # Check if the resource is a JSON file based on the file extension
     # if url.endswith(".json") or (local_mode and filename.endswith(".json")):
     #     return json.loads(content)
@@ -122,9 +123,12 @@ def compose_html():
     # Concatenate all HTML contents into one string
     line_items_html_content = "\n".join(line_items_content_array)
 
-    main_html_content = main_html_template.replace('{{202401_report_salutation}}', salutation)
-    main_html_content = main_html_content.replace('{{202401_report_line_items}}', line_items_html_content)
-    main_html_content = main_html_content.replace('{{202401_report_total_giving}}', total_giving)
+    print(f'main_html_template is salutation {salutation} main_html_template-> {main_html_template[:300]}')
+    main_html_content = main_html_template.replace("{{202401_report_salutation}}", salutation)
+    print(f"main_html_content {main_html_content[:300]}")
+    print(f"line_items_html_content {line_items_html_content[:300]}")
+    # main_html_content = main_html_content.replace('{{202401_report_line_items}}', line_items_html_content)
+    # main_html_content = main_html_content.replace('{{202401_report_total_giving}}', total_giving)
 
     if local_mode:
         output_file_name = f'test_lob.html'
@@ -211,7 +215,7 @@ if "contactName" in jsonObject:
     if (error is None or error == '') and count_of_line_items > 15:
         error = f"count_of_line_items is {count_of_line_items} which exceed the frame"
 
-    output = {"ftp_html_path": ftp_html_path, "error": error}
+    output = {"ftp_html_path": ftp_html_path, "error": error, "html_content": html_content[:300]}
 else:
     output = {"error": json_error}
 
