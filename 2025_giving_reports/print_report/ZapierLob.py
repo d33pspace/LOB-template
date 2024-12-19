@@ -10,6 +10,7 @@ from ftplib import FTP, error_perm
 from datetime import datetime
 from io import BytesIO
 import unicodedata
+import re
 
 
 preferred_language = 'en'
@@ -123,12 +124,9 @@ def compose_html():
     # Concatenate all HTML contents into one string
     line_items_html_content = "\n".join(line_items_content_array)
 
-    print(f'main_html_template is salutation {salutation} main_html_template-> {main_html_template[:300]}')
-    main_html_content = main_html_template.replace("{{202401_report_salutation}}", salutation)
-    print(f"main_html_content {main_html_content[:300]}")
-    print(f"line_items_html_content {line_items_html_content[:300]}")
-    # main_html_content = main_html_content.replace('{{202401_report_line_items}}', line_items_html_content)
-    # main_html_content = main_html_content.replace('{{202401_report_total_giving}}', total_giving)
+    main_html_content = re.sub(r'\{\{202401_report_salutation\}\}', salutation, main_html_template)
+    main_html_content = re.sub(r'\{\{202401_report_line_items\}\}', line_items_html_content, main_html_content)
+    main_html_content = re.sub(r'\{\{202401_report_total_giving\}\}', total_giving, main_html_content)
 
     if local_mode:
         output_file_name = f'test_lob.html'
