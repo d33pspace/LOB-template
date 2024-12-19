@@ -93,9 +93,6 @@ def compose_html():
         invoiceTotalUSD_Count += float(line_item['invoiceTotalUSD'])
         unitPriceSource_Count += float(line_item['unitPriceSource'])
 
-    line_item_template_to_use = "<tr><td><p>{{date}}</p></td><td><p>{{reference}}</p></td>" \
-                                "<td><p>{{amount}}</p></td><td><p>{{currency}}</p></td></tr>"
-
     amount_format = "{:,.2f}"
     total_giving = "{:,.2f} {}"
     if len(unique_currencies) == 1:
@@ -109,15 +106,14 @@ def compose_html():
     # Iterate through each line item in the JSON object
     for line_item in jsonObject['lineItems']:
         # Replace placeholders in the HTML template with values from the JSON object
-        temp_html_content = line_item_template_to_use.replace('{{date}}',
-                                                              format_date_of_gift(line_item['invoiceDate']))
-        temp_html_content = temp_html_content.replace('{{reference}}',
-                                                      line_item['invoiceNumber'].replace("INV", "RWL"))
-        temp_html_content = temp_html_content.replace('{{amount}}',
-                                                      amount_format.format(float(line_item['unitPriceSource'])))
-        temp_html_content = temp_html_content.replace('{{currency}}',
-                                                      translate_currency({}, line_item['originalCurrency']))
-
+        invoiceDate = format_date_of_gift(line_item['invoiceDate'])
+        invoiceNumber = line_item['invoiceNumber'].replace("INV", "RWL")
+        unitPriceSource = amount_format.format(float(line_item['unitPriceSource']))
+        originalCurrency = translate_currency({}, line_item['originalCurrency'])
+        temp_html_content = (f"<tr><td><p>{invoiceDate}</p></td>"
+                             f"<td><p>{invoiceNumber}</p></td>"
+                             f"<td><p>{unitPriceSource}</p></td>"
+                             f"<td><p>{originalCurrency}</p></td></tr>")
         # Append the generated HTML content to the list
         line_items_content_array.append(temp_html_content)
 
@@ -134,6 +130,7 @@ def compose_html():
             output_file.write(main_html_content)
         print(f'The final HTML content has been written to {output_file_name}')
 
+    print(f"'{salutation}' donated {len(line_items_content_array)} records last year.")
     return main_html_content, len(line_items_content_array)
 
 
@@ -213,7 +210,7 @@ if "contactName" in jsonObject:
     if (error is None or error == '') and count_of_line_items > 15:
         error = f"count_of_line_items is {count_of_line_items} which exceed the frame"
 
-    output = {"ftp_html_path": ftp_html_path, "error": error, "html_content": html_content[:300]}
+    output = {"ftp_html_path": ftp_html_path, "error": error}
 else:
     output = {"error": json_error}
 
