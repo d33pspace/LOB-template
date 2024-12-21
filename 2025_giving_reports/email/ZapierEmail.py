@@ -53,7 +53,7 @@ def translate_payment_method(payment_method, reference=None):
 
 def translate_currency(currency_set, currency=None):
 
-    if len(currency_set) > 1:
+    if receipt_delivery_multi_currency or len(currency_set) > 1:
         return 'USD' if preferred_language == 'en' else '美元'
 
     if currency is None and len(currency_set) == 1:
@@ -110,15 +110,16 @@ def compose_html():
         invoiceTotalUSD_Count += float(line_item['invoiceTotalUSD'])
         unitPriceSource_Count += float(line_item['unitPriceSource'])
 
-    line_item_template_to_use = email_report_en_line_item_single_currency_url if len(unique_currencies) == 1 \
-        else email_report_en_line_item_multi_currency_template
+    use_multi_currency = receipt_delivery_multi_currency or len(unique_currencies) > 1
+    line_item_template_to_use = email_report_en_line_item_multi_currency_template if use_multi_currency \
+        else email_report_en_line_item_single_currency_url
 
     amount_format = "{:,.2f}"
     total_giving = "{:,.2f} {}"
-    if len(unique_currencies) == 1:
-        total_giving = total_giving.format(unitPriceSource_Count, translate_currency(unique_currencies))
-    else:
+    if use_multi_currency:
         total_giving = total_giving.format(invoiceTotalUSD_Count, translate_currency(unique_currencies))
+    else:
+        total_giving = total_giving.format(unitPriceSource_Count, translate_currency(unique_currencies))
 
     # List to store generated HTML content
     line_items_content_array = []
@@ -183,6 +184,7 @@ if local_mode:
         "salutation": "xxx"
     }
 
+receipt_delivery_multi_currency = input_data.get('receipt_delivery_multi_currency', False)
 preferred_language = 'zh' if "preferred_language" in input_data and 'zh' in input_data["preferred_language"] else 'en'
 jsonObject = {}
 json_error = ''
