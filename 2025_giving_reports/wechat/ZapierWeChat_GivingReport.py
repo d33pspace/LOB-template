@@ -1,5 +1,6 @@
 ##############
 # V2024-12-08 init version of WeChat giving report
+# V2024-12-21 add receipt_delivery_multi_currency
 ##############
 import os
 import sys
