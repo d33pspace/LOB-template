@@ -1,5 +1,6 @@
 ##############
 # V2024-12-16 report
+# V2025-02-10 add receiptName
 ##############
 import os
 import sys
@@ -77,6 +78,7 @@ def read_resource(url):
 def compose_html():
     from_email = 'connect@renewal.org.cn'
     contactName = jsonObject["contactName"]
+    receiptName = input_data["receipt_name"]
     salutation = input_data["salutation"]
     salutation = contactName if salutation is None or salutation == "" else salutation
 
@@ -123,6 +125,7 @@ def compose_html():
     main_html_content = re.sub(r'\{\{202401_report_salutation\}\}', salutation, main_html_template)
     main_html_content = re.sub(r'\{\{202401_report_line_items\}\}', line_items_html_content, main_html_content)
     main_html_content = re.sub(r'\{\{202401_report_total_giving\}\}', total_giving, main_html_content)
+    main_html_content = re.sub(r'\{\{202401_receipt_name\}\}', receiptName, main_html_content)
 
     if local_mode:
         output_file_name = f'test_lob.html'
@@ -184,7 +187,8 @@ if local_mode:
     # read_json_object = json.dumps(read_resource("input.json"))
     input_data = {
         "json_object": read_json_object,
-        "salutation": "Amadeus"
+        "salutation": "Amadeus",
+        "receipt_name": "Amadeus ReceiptName"
     }
 
 jsonObject = {}
