@@ -262,7 +262,7 @@ def send_report_to_website(input_obj):
         # "wechatNickname": input_obj.get("wechat_nickname", ""),
         "contributor": input_obj.get("contributor", ""),
         "preferredLanguage": language_in_method,
-        # "reference": input_obj.get("reference", ""),
+        "reference": input_obj.get("reference", ""),
         "contactOwnerCn": is_contact_owner_cn,
         "text": text
     })
@@ -311,6 +311,7 @@ if local_mode:
         "contact_owner": "33083949342",
         "contributor": "User Test", # full name
         "receipt_delivery_multi_currency": True,
+        "reference": "TEST-111",
         #### new ends
         "json_object": read_json_object,
         "preferred_language": "en-us", #
