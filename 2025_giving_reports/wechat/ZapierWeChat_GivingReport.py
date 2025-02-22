@@ -1,6 +1,7 @@
 ##############
 # V2024-12-08 init version of WeChat giving report
 # V2024-12-21 add receipt_delivery_multi_currency
+# V2025-02-22 update wechat template
 ##############
 import os
 import sys
@@ -246,25 +247,25 @@ def send_report_to_website(input_obj):
         is_contact_owner_cn = input_obj.get("contact_owner") == "33083949"
 
     language_in_method = 'zh-cn' if 'cn' in input_obj.get("preferred_language", "") else 'en-us'
-    if language_in_method == 'zh-cn':
-        text = "{}：感谢您2024年对日新中心慷慨的捐赠，请查看您这一年的捐赠记录 {}".format(
-            input_obj.get("salutation", ""),
-            input_obj.get("ftp_html_path", "")
-        )
-    else:
-        text = "{}, thank you for your generous donation to Renewal in 2024, here is the records {}".format(
-            input_obj.get("salutation", ""),
-            input_obj.get("ftp_html_path", "")
-        )
+    # if language_in_method == 'zh-cn':
+    #     text = "{}：感谢您2024年对日新中心慷慨的捐赠，请查看您这一年的捐赠记录 {}".format(
+    #         input_obj.get("salutation", ""),
+    #         input_obj.get("ftp_html_path", "")
+    #     )
+    # else:
+    #     text = "{}, thank you for your generous donation to Renewal in 2024, here is the records {}".format(
+    #         input_obj.get("salutation", ""),
+    #         input_obj.get("ftp_html_path", "")
+    #     )
 
     data = json.dumps({
         "phoneNumber": input_obj.get("phone_number", ""),
-        # "wechatNickname": input_obj.get("wechat_nickname", ""),
+        "salutation": input_obj.get("salutation", ""),
         "contributor": input_obj.get("contributor", ""),
         "preferredLanguage": language_in_method,
         # "reference": input_obj.get("reference", ""),
         "contactOwnerCn": is_contact_owner_cn,
-        "text": text
+        "text": input_obj.get("ftp_html_path", "")
     })
 
     # Try to send the request up to 10 times
