@@ -2,6 +2,7 @@
 # V2024-12-08 init version of WeChat giving report
 # V2024-12-21 add receipt_delivery_multi_currency
 # V2025-02-22 update wechat template
+# V2025-02-28 remove spaces from the url 
 ##############
 import os
 import sys
@@ -39,11 +40,14 @@ def format_date_of_gift(date_string):
     return formatted_date
 
 def contains_only_halfwidth_characters(input_string):
-    for char in input_string:
+    # Remove spaces from the input string
+    input_string_no_spaces = input_string.replace(" ", "")
+    
+    for char in input_string_no_spaces:
         # Check if the character is a half-width character
         if unicodedata.east_asian_width(char) != 'Na' and unicodedata.east_asian_width(char) != 'F':
             return ""
-    return input_string
+    return input_string_no_spaces
 
 
 def translate_payment_method(payment_method, reference=None):
@@ -302,7 +306,7 @@ def send_report_to_website(input_obj):
 ftp_host = 'renewal365.org'
 ftp_username = 'edwazhao@renewal365.org'
 ftp_password = 'A6%hJ!xGea'
-remote_html_directory = '/givingreport/2025/'
+remote_html_directory = '/givingreport/2024/'
 if local_mode:
     read_json_object = read_resource("input_2page.json")
     # read_json_object = json.dumps(read_resource("input.json"))
@@ -340,7 +344,7 @@ if "contactName" in jsonObject:
     html_file_name = random_chars + "_" + contains_only_halfwidth_characters(input_data["salutation"]) + ".html"
     remote_html_file_path = f"{remote_html_directory}{html_file_name}"
     error = upload_string_to_ftp(ftp_host, ftp_username, ftp_password, html_content, remote_html_file_path)
-    ftp_html_path = f"https://renewal365.org{remote_html_directory}{html_file_name}"
+    ftp_html_path = f"https://renewal.deepspace.org.cn{remote_html_directory}{html_file_name}"
 
     info = f"count_of_line_items is {count_of_line_items} for {input_data['salutation']}"
 
