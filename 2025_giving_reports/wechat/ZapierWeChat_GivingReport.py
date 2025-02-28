@@ -320,7 +320,7 @@ if local_mode:
         "json_object": read_json_object,
         "preferred_language": "en-us",
         "mail_to": "test-user@renewal.com",
-        "salutation": "TestUser"
+        "salutation": "Test xUser"
     }
 
 receipt_delivery_multi_currency = input_data.get('receipt_delivery_multi_currency', False)
