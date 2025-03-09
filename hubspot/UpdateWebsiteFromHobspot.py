@@ -42,15 +42,20 @@ def update_website(input_obj):
             approach_preference = "None"
 
         # Construct the new JSON object
+        preferred_language = input_obj.get("preferred_language", "")
+        preferred_language_truncated = preferred_language[:5]
+        
+        if preferred_language != preferred_language_truncated and preferred_language:
+            print(f"Info: preferredLanguage truncated from '{preferred_language}' to '{preferred_language_truncated}'")
+            
         data = json.dumps({
             "email": input_obj.get("email", ""),
             "fullName": input_obj.get("receipt_name", ""),
             "nickname": input_obj.get("salutation", ""),
-            "preferredLanguage": input_obj.get("preferred_language", ""),
+            "preferredLanguage": preferred_language_truncated,
             "approachPreference": approach_preference,
             "zapierInputData": json.dumps(input_obj)
         })
-
         print("Post to url {} with data: {}".format(url, str(data)))
         # Make a POST request to the API endpoint with the defined headers and data
         response = requests.post(url, headers=headers, data=data)
@@ -71,7 +76,7 @@ if local_mode:
         "receipt_preference": "WeChat", # WeChat, email, manual
         "wechat_preference": "false",   # No or N means accept WeChat stories
         "email_preference": "true",   # No or N means accept email stories
-        "preferred_language": "zh-cn",
+        "preferred_language": "zh-cns",
         "receipt_name": "Test Z1",
         "salutation": "et1"
     }
