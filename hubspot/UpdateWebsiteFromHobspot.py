@@ -51,6 +51,7 @@ def update_website(input_obj):
             "zapierInputData": json.dumps(input_obj)
         })
 
+        print("Post to url {} with data: {}".format(url, str(data)))
         # Make a POST request to the API endpoint with the defined headers and data
         response = requests.post(url, headers=headers, data=data)
         result_json = {"update_count": response.json().get("update_count", 0), "message": "website processed"}
