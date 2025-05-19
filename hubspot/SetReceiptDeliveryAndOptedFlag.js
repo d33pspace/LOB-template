@@ -25,7 +25,7 @@ let optedWeChat = '';
 let optedEmail = '';
 if (serverLocation === 'CN') {
     optedWeChat = optedValue;
-} else if (serverLocation === 'US') {
+} else {
     optedEmail = optedValue;
 }
 
