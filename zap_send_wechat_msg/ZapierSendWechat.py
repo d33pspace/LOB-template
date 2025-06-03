@@ -1,4 +1,5 @@
 ##############
+# V2025-06-03 add last_gift_days
 # V2024-10-05 separate contact_owner and prefer language
 # V2024-09-30 set to English group if missing contact_owner
 ##############
@@ -72,6 +73,7 @@ def send_wechat_message(input_obj):
         "contributor": input_obj.get("contributor", ""),
         "preferredLanguage": preferred_language,
         "reference": input_obj.get("reference", ""),
+        "last_gift_days": input_obj.get("last_gift_days", ""),
         "contactOwnerCn": is_contact_owner_cn,
         "text": text
     })
@@ -120,7 +122,8 @@ if local_mode:
         "salutation": "Edward",
         "description": "When people are struggling, your gift offers real help",
         "message": "您捐赠的1.02元为人们提供了紧急援助，帮助他们获得重建人生的技能与机会。您的支持至关重要，因此衷心地感谢您！",
-        "date": "2024-08-31"
+        "date": "2024-08-31",
+        "last_gift_days": "13"
     }
 
 output = send_wechat_message(input_data)

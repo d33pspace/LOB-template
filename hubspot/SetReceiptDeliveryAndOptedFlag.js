@@ -23,7 +23,7 @@ if (sendReceiptFlag === 'N') {
 // Set optedWeChat or optedEmail based on the server location
 let optedWeChat = '';
 let optedEmail = '';
-if (serverLocation === 'CN') {
+if (serverLocation.toUpperCase() === 'CN') {
     optedWeChat = optedValue;
 } else {
     optedEmail = optedValue;
