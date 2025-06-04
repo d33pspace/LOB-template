@@ -24,10 +24,10 @@ def send_wechat_message(input_obj):
     validation_message = ""
     retry_times = 25
     url = 'https://renewal.deepspace.org.cn/api/v1/work-tool/send-message'
-    if local_mode:
-        validation_message += "enable test mode; "
-        url = 'http://localhost:8118/v1/work-tool/send-message'
-        retry_times = 2
+    # if local_mode:
+    #     validation_message += "enable test mode; "
+    #     url = 'http://localhost:8118/v1/work-tool/send-message'
+    #     retry_times = 2
 
     headers = {
         'Content-Type': 'application/json',
@@ -73,7 +73,7 @@ def send_wechat_message(input_obj):
         "contributor": input_obj.get("contributor", ""),
         "preferredLanguage": preferred_language,
         "reference": input_obj.get("reference", ""),
-        "last_gift_days": input_obj.get("last_gift_days", ""),
+        "lastGiftDays": input_obj.get("last_gift_days", ""),
         "contactOwnerCn": is_contact_owner_cn,
         "text": text
     })
@@ -119,7 +119,7 @@ if local_mode:
         "amount": "1.02 CNY",
         "method": "WeChat",
         "reference": "TEST-9999",
-        "salutation": "Edward",
+        "salutation": "Edward_Test",
         "description": "When people are struggling, your gift offers real help",
         "message": "您捐赠的1.02元为人们提供了紧急援助，帮助他们获得重建人生的技能与机会。您的支持至关重要，因此衷心地感谢您！",
         "date": "2024-08-31",
