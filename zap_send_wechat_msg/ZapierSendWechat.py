@@ -2,6 +2,7 @@
 # V2025-06-03 add last_gift_days
 # V2024-10-05 separate contact_owner and prefer language
 # V2024-09-30 set to English group if missing contact_owner
+# V2025-08-18 add contact owner id to the API call
 ##############
 
 # https://zapier.com/editor/144538426/draft/144538432/fields
@@ -24,10 +25,10 @@ def send_wechat_message(input_obj):
     validation_message = ""
     retry_times = 25
     url = 'https://renewal.deepspace.org.cn/api/v1/work-tool/send-message'
-    # if local_mode:
-    #     validation_message += "enable test mode; "
-    #     url = 'http://localhost:8118/v1/work-tool/send-message'
-    #     retry_times = 2
+    if local_mode:
+        validation_message += "enable test mode; "
+        url = 'http://localhost:8118/v1/work-tool/send-message'
+        retry_times = 2
 
     headers = {
         'Content-Type': 'application/json',
@@ -74,6 +75,7 @@ def send_wechat_message(input_obj):
         "preferredLanguage": preferred_language,
         "reference": input_obj.get("reference", ""),
         "lastGiftDays": input_obj.get("last_gift_days", ""),
+        "contactOwner": input_obj.get("contact_owner", ""),
         "contactOwnerCn": is_contact_owner_cn,
         "text": text
     })
