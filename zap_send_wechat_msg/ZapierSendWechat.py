@@ -3,6 +3,7 @@
 # V2024-10-05 separate contact_owner and prefer language
 # V2024-09-30 set to English group if missing contact_owner
 # V2025-08-18 add contact owner id to the API call
+# V2025-09-04 add amount to the API call
 ##############
 
 # https://zapier.com/editor/144538426/draft/144538432/fields
@@ -77,6 +78,7 @@ def send_wechat_message(input_obj):
         "lastGiftDays": input_obj.get("last_gift_days", ""),
         "contactOwner": input_obj.get("contact_owner", ""),
         "contactOwnerCn": is_contact_owner_cn,
+        "amount": input_obj.get("amount", "0"),
         "text": text
     })
 
@@ -100,7 +102,7 @@ def send_wechat_message(input_obj):
             print(f"Attempt {attempt + 1} failed with exception: {str(e)}.")
             error_message = f"Attempt {attempt + 1} failed with exception: {str(e)}."
 
-        # Wait for 1 seconds before retrying
+        # Wait for 1 second before retrying
         time.sleep(1)
 
     # If all attempts fail, return an error message
