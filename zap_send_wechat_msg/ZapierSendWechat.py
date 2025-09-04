@@ -91,9 +91,10 @@ def send_wechat_message(input_obj):
                 # If the request is successful, return the response
                 return {
                     "command_id": str(response.json().get("command_id", "")),
-                    "message": response.json().get("message", ""),
                     "code": response.status_code,
+                    "donationType": str(response.json().get("donationType", "")),
                     "validation_message": validation_message,
+                    "message": response.json().get("message", ""),
                     "data_to_website": data
                 }
             else:
@@ -116,11 +117,11 @@ def send_wechat_message(input_obj):
 #        "contact_owner": "33083949" is hanson
 if local_mode:
     input_data = {
-        "phone_number": "+86 15250982865",
+        "phone_number": "+86 15195906125",
         "preferred_language": "en-us",
         "contact_owner": "33083949342",
         "contributor": "Edward Test",
-        "amount": "1.02 CNY",
+        "amount": "105.00 CNY",
         "method": "WeChat",
         "reference": "TEST-9999",
         "salutation": "Edward_Test",
@@ -131,3 +132,6 @@ if local_mode:
     }
 
 output = send_wechat_message(input_data)
+
+if local_mode:
+    print(output)
