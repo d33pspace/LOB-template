@@ -43,6 +43,7 @@ def send_wechat_message(input_obj):
     for field in fields_to_clean:
         if field in input_obj:
             input_obj[field] = re.sub(r"[\u2000-\u200B]", " ", input_obj[field])
+            input_obj[field] = re.sub(r" ", " ", input_obj[field])
 
     # Construct the text with values from input_obj
     is_contact_owner_cn = False
