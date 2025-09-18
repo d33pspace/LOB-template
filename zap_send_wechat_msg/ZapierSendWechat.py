@@ -4,6 +4,7 @@
 # V2024-09-30 set to English group if missing contact_owner
 # V2025-08-18 add contact owner id to the API call
 # V2025-09-04 add amount to the API call
+# V2025-09-18 Clean specific fields to replace Unicode spaces with normal spaces
 ##############
 
 # https://zapier.com/editor/144538426/draft/144538432/fields
@@ -14,6 +15,7 @@ import requests
 import json
 import time
 from datetime import datetime
+import re
 
 local_mode = False  # True or False
 if "local_mode=true" in sys.argv:
@@ -35,6 +37,12 @@ def send_wechat_message(input_obj):
         'Content-Type': 'application/json',
         'Authorization': 'API gzWGFkOzdPqrr8DiNYbWJjNGExMDczNmVlNzU3NzoXOTeJDYyz'
     }
+
+    # Clean specific fields to replace Unicode spaces with normal spaces
+    fields_to_clean = ["contributor", "salutation", "description", "message"]
+    for field in fields_to_clean:
+        if field in input_obj:
+            input_obj[field] = re.sub(r"[\u2000-\u200B]", " ", input_obj[field])
 
     # Construct the text with values from input_obj
     is_contact_owner_cn = False
@@ -120,11 +128,11 @@ if local_mode:
         "phone_number": "+86 15195906125",
         "preferred_language": "en-us",
         "contact_owner": "33083949342",
-        "contributor": "Edward Test",
+        "contributor": "Pe te r",
         "amount": "105.00 CNY",
         "method": "WeChat",
         "reference": "TEST-9999",
-        "salutation": "Edward_Test",
+        "salutation": "Pe te r",
         "description": "When people are struggling, your gift offers real help",
         "message": "您捐赠的1.02元为人们提供了紧急援助，帮助他们获得重建人生的技能与机会。您的支持至关重要，因此衷心地感谢您！",
         "date": "2024-08-31",
