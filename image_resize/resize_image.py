@@ -1,8 +1,8 @@
 import os
 from PIL import Image
 
-INPUT_DIR = r"C:\Users\EDWAZHAO\OneDrive - Schenker AG\Desktop\霁觅\20251205_new_4_products_not-used\古树晒红"
-OUTPUT_DIR = r"C:\Users\EDWAZHAO\OneDrive - Schenker AG\Desktop\霁觅\20251205_new_4_products_not-used\古树晒红\update"
+INPUT_DIR = r"C:\Users\EDWAZHAO\OneDrive - Schenker AG\Desktop\霁觅\20251205_new_4_products\白茶"
+OUTPUT_DIR = os.path.join(INPUT_DIR, "update")
 MAX_SIZE_KB = 500
 MAX_SIZE_BYTES = MAX_SIZE_KB * 1024
 
