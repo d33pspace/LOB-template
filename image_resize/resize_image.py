@@ -1,7 +1,7 @@
 import os
 from PIL import Image
 
-INPUT_DIR = r"C:\Users\EDWAZHAO\OneDrive - Schenker AG\Desktop\霁觅\20251205_new_4_products\白茶"
+INPUT_DIR = r"C:\Users\EDWAZHAO\OneDrive - Schenker AG\Desktop\霁觅\20251205_new_4_products\古树生普"
 OUTPUT_DIR = os.path.join(INPUT_DIR, "update")
 MAX_SIZE_KB = 500
 MAX_SIZE_BYTES = MAX_SIZE_KB * 1024
@@ -38,15 +38,47 @@ def compress_image(input_path, output_path):
     print(f"⚠️ {os.path.basename(output_path)} reached minimum quality {min_quality}")
 
 def process_folder():
-    for filename in os.listdir(INPUT_DIR):
-        if not filename.lower().endswith((".jpg", ".jpeg", ".png", ".webp")):
+    # Counters for each type
+    counters = {"m": 0, "x": 0, "d": 0, "other": 0}
+    
+    # Walk through all subdirectories
+    for root, dirs, files in os.walk(INPUT_DIR):
+        # Skip the OUTPUT_DIR itself
+        if root == OUTPUT_DIR or OUTPUT_DIR in root:
             continue
-
-        input_path = os.path.join(INPUT_DIR, filename)
-        output_name = os.path.splitext(filename)[0] + ".jpg"
-        output_path = os.path.join(OUTPUT_DIR, output_name)
-
-        compress_image(input_path, output_path)
+            
+        # Get the folder name to determine prefix
+        folder_name = os.path.basename(root)
+        
+        # Determine prefix based on folder name
+        if "主图" in folder_name:
+            prefix = "m"
+        elif "规格" in folder_name:
+            prefix = "x"
+        elif "详情" in folder_name:
+            prefix = "d"
+        else:
+            prefix = None
+        
+        # Process each image in this directory
+        for filename in sorted(files):
+            if not filename.lower().endswith((".jpg", ".jpeg", ".png", ".webp")):
+                continue
+            
+            input_path = os.path.join(root, filename)
+            
+            # Generate output filename with prefix
+            if prefix:
+                counters[prefix] += 1
+                output_name = f"{prefix}{counters[prefix]:02d}.jpg"
+            else:
+                counters["other"] += 1
+                output_name = f"other_{counters['other']:02d}.jpg"
+            
+            output_path = os.path.join(OUTPUT_DIR, output_name)
+            
+            print(f"Processing: {os.path.relpath(input_path, INPUT_DIR)} → {output_name}")
+            compress_image(input_path, output_path)
 
 if __name__ == "__main__":
     process_folder()
