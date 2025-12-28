@@ -1,7 +1,7 @@
 import os
 from PIL import Image
 
-INPUT_DIR = r"C:\Users\EDWAZHAO\OneDrive - Schenker AG\Desktop\霁觅\20251205_new_4_products\古树生普"
+INPUT_DIR = r"C:\Users\EDWAZHAO\OneDrive - Schenker AG\Desktop\霁觅\20251205_new_4_products\套装"
 OUTPUT_DIR = os.path.join(INPUT_DIR, "update")
 MAX_SIZE_KB = 500
 MAX_SIZE_BYTES = MAX_SIZE_KB * 1024
@@ -47,18 +47,8 @@ def process_folder():
         if root == OUTPUT_DIR or OUTPUT_DIR in root:
             continue
             
-        # Get the folder name to determine prefix
+        # Get the folder name
         folder_name = os.path.basename(root)
-        
-        # Determine prefix based on folder name
-        if "主图" in folder_name:
-            prefix = "m"
-        elif "规格" in folder_name:
-            prefix = "x"
-        elif "详情" in folder_name:
-            prefix = "d"
-        else:
-            prefix = None
         
         # Process each image in this directory
         for filename in sorted(files):
@@ -66,6 +56,16 @@ def process_folder():
                 continue
             
             input_path = os.path.join(root, filename)
+            
+            # Determine prefix based on folder name or filename
+            if "主图" in folder_name or "主图" in filename:
+                prefix = "m"
+            elif "规格" in folder_name or "规格" in filename:
+                prefix = "x"
+            elif "详情" in folder_name or "详情" in filename:
+                prefix = "d"
+            else:
+                prefix = None
             
             # Generate output filename with prefix
             if prefix:
