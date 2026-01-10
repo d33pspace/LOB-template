@@ -83,7 +83,7 @@ def compose_html():
     salutation = contactName if salutation is None or salutation == "" else salutation
 
     public_page_url = "https://d33pspace.github.io/LOB-template"
-    main_template_url = f'{public_page_url}/2025_giving_reports/print_report/print_report_no_photo.html'
+    main_template_url = f'{public_page_url}/2026_giving_reports/print_report/print_report_no_photo.html'
 
     main_html_template = read_resource(main_template_url)
 
