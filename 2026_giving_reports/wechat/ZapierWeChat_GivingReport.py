@@ -306,7 +306,7 @@ def send_report_to_website(input_obj):
 ftp_host = 'renewal365.org'
 ftp_username = 'edwazhao@renewal365.org'
 ftp_password = 'A6%hJ!xGea'
-remote_html_directory = '/givingreport/2024/'
+remote_html_directory = '/givingreport/2026/'
 if local_mode:
     read_json_object = read_resource("input_2page.json")
     # read_json_object = json.dumps(read_resource("input.json"))
