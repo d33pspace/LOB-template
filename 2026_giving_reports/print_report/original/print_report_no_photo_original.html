@@ -1,0 +1,571 @@
+<html>
+<head>
+<meta charset="UTF-8">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@400;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Roboto+Serif:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900" rel="stylesheet" type="text/css">
+<title>Newsletter</title>
+<style>
+    *, *:before, *:after {
+        -webkit-box-sizing: border-box;
+        -moz-box-sizing: border-box;
+        box-sizing: border-box;
+    }
+    p {
+        margin: 0;
+    }
+    body {
+        width: 8.5in;
+        height: 11in;
+        margin: 0;
+    }
+    .page {
+        page-break-after: always;
+        position: relative;
+        width: 8.5in;
+        height: 11in;
+    }
+    .page-content {
+        position: absolute;
+        width: 7.11in;
+        height: 10.083in;
+        left: 0.695in;
+        top: 0.417in;
+        background-color: rgba(0,0,0,0);
+    }
+
+    .page-content.page2 {
+        height: 10.444in;
+    }
+
+    .page2 .main-text {
+        top: 0;
+    }
+
+    .page2 .main-text table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    .page2 .main-text table thead {
+        background: #F2F2F2;
+        border-radius: 5px;
+    }
+
+    .page2 .main-text table thead td {
+        padding: 5.33px 0;
+    }
+
+    .page2 .main-text table thead td p {
+        font-family: 'Roboto Slab';
+        font-weight: 700;
+        font-size: 10pt;
+        line-height: 16pt;
+        color: #1F1F1F;
+        width: 66.666px;
+        text-align: right;
+        margin: 0 auto;
+    }
+
+    .page2 .main-text table tbody td {
+        padding: 2.666px 0;
+    }
+
+    .page2 .main-text table tbody td p {
+        font-family: 'Roboto Slab';
+        font-weight: 400;
+        font-size: 10pt;
+        line-height: 16pt;
+        text-align: right;
+        color: #1F1F1F;
+        width: 119.333px;
+    }
+
+    .page2 .main-text table tfoot td {
+        padding: 4px 0;
+    }
+
+    .page2 .main-text table tfoot td p {
+        font-family: 'Roboto Slab';
+        font-weight: 700;
+        font-size: 10pt;
+        line-height: 16pt;
+        color: #1F1F1F;
+    }
+
+    .page2 .main-text table tfoot td.firstcol p {
+        margin-left: 50.666px;
+    }
+
+    .page2 .main-text table tfoot td.lastcol p {
+        margin-right: 50.666px;
+        text-align: right;
+    }
+
+    .page2 .main-text .subtable {
+        margin-top: 10.333px;
+        font-family: 'Roboto Slab';
+        font-weight: 400;
+        font-size: 10pt;
+        line-height: 16pt;
+        color: #1F1F1F;
+    }
+
+    .receipt {
+        font-family: 'Roboto Slab';
+        font-weight: 700;
+        font-size: 12pt;
+        line-height: 14pt;
+        letter-spacing: 0.12pt;
+        color: #CE0538;
+        position: absolute;
+        left: 0;
+        top: 20px;
+    }
+
+    .top-logo {
+        position: absolute;
+        right: 0;
+        top: 0;
+    }
+
+    .top-logo img {
+        width: 106.666px;
+        height: 80px;
+        float: right;
+    }
+
+    .top-logo .date {
+        margin-top: 202.666px;
+        font-family: 'Roboto Slab';
+        font-weight: 400;
+        font-size: 11.5pt;
+        line-height: 14pt;
+        color: #1F1F1F;
+    }
+
+    .main-text {
+        position: relative;
+        left: 0;
+        top: 258.7px;
+    }
+
+    .main-text .title {
+        font-family: 'Roboto Slab';
+        font-weight: 700;
+        font-size: 20pt;
+        line-height: 24pt;
+        letter-spacing: 0.12pt;
+        color: #1F1F1F;
+        margin-bottom: 13.33px;
+    }
+
+    .main-text .text {
+        font-family: 'Roboto Slab';
+        font-weight: 400;
+        font-size: 11.5pt;
+        line-height: 16pt;
+        color: #000000;
+    }
+
+    .main-text .signature {
+        width: 106.666px;
+        height: 64px;
+        margin-top: 13.333px;
+    }
+
+    .col {
+        width: 49%;
+    }
+
+    .leftcol {
+        float: left;
+    }
+
+    .rightcol {
+        float: right;
+    }
+    
+    
+
+    .footer {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        height: 250.656px;
+    }
+
+    .footer .title {
+        font-family: 'Roboto Slab';
+        font-weight: 700;
+        font-size: 15pt;
+        line-height: 18pt;
+        letter-spacing: 0.12pt;
+        color: #1F1F1F;
+        margin-bottom: 13.333px;
+    }
+
+    .footer .text {
+        font-family: 'Roboto Slab';
+        font-weight: 400;
+        font-size: 11.5pt;
+        line-height: 16pt;
+        color: #1F1F1F;
+        margin-bottom: 26.666px;
+    }
+
+    .banner {
+        height: 197.333px;
+        width: 100%;
+        margin-bottom: 13.333px;
+    }
+
+    .page2 .main-text .title {
+        margin-bottom: 8px;
+        padding-top: 9.333px;
+    }
+
+    .page2  .main-text .subtitle {
+        font-family: 'Roboto Slab';
+        font-weight: 400;
+        font-size: 12pt;
+        line-height: 16pt;
+        color: #1F1F1F;
+        margin-bottom: 13.333px;
+    }
+
+    .page2 .main-text .logos-wrap {
+        position: absolute;
+        top: 0;
+        right: 0;
+    }
+
+    .page2 .main-text .logos {
+        width: 219.7333px;
+        height: 74.666px;
+    }
+
+    .caption {
+        font-family: 'Roboto Serif';
+        font-style: italic;
+        font-weight: 400;
+        font-size: 11pt;
+        line-height: 15pt;
+        text-align: center;
+        color: #8C8C8C;
+    }
+
+    .footer .col {
+        width: 48%;
+    }
+
+    .footer .logo-block {
+        position: absolute;
+        width: 100%;
+        bottom: 20px;
+        left: 20px;
+    }
+
+    .footer .logo-block img {
+        float: left;
+        width: 72px;
+        height: 53.3px;
+        margin-right: 26.66px;
+    }
+
+    .footer .logo-block .address {
+        font-family: 'Roboto Slab';
+        font-weight: 400;
+        font-size: 10pt;
+        line-height: 14pt;
+        color: #1F1F1F;
+    }
+
+    .donate-form {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        display: inline-block;
+        width: 100%;
+    }
+
+    .donate-form .form-banner {
+        text-align: center;
+        width: 100%;
+        padding: 12px 0;
+        border: 1.333px solid #CE0538;
+        border-radius: 2px;
+        margin-bottom: 13.3333px;
+        font-family: 'Roboto Slab';
+        font-weight: 700;
+        font-size: 15pt;
+        line-height: 18pt;
+        color: #1F1F1F;
+    }
+
+    .donate-form .form-title {
+        font-family: 'Roboto Slab';
+        font-weight: 600;
+        font-size: 11.5pt;
+        line-height: 18pt;
+        color: #1F1F1F;
+        margin-bottom: 13.333px;
+    }
+
+    .donate-form .form-checkbox {
+        font-family: 'Roboto Slab';
+        font-weight: 400;
+        font-size: 11.5pt;
+        line-height: 14pt;
+        color: #1F1F1F;
+        margin-bottom: 9.3333px;
+        position: relative;
+        padding-left: 37.333px;
+    }
+
+    .donate-form .text {
+        padding: 2.666px 0;
+    }
+
+    .donate-form .form-checkbox::before {
+        content: '';
+        position: absolute;
+        left: 0;
+        width: 24px; 
+        height: 24px;
+        border: 1.333px solid #D9D9D9;
+        border-radius: 50.666px;
+        top: 50%;
+        margin-top: -12px;
+    }
+
+    .donate-form .form-checkbox .strong {
+        font-weight: 700;
+    }
+
+    .donate-form .form-checkbox .input-text .strong {
+        padding-right: 120px;
+        position: relative;
+    }
+
+    .donate-form .input-text {
+        display: flex;
+        align-items: center;
+        padding: 6.666px 0;
+    }
+
+    .donate-form .form-checkbox .input-text .strong::after {
+        content: '';
+        position: absolute;
+        left: 16.666px;
+        width: 106.666px;
+        height: 32px;
+        border: 1.33px solid #D9D9D9;
+        border-radius: 3px;
+        top: -6.66px;
+    }
+
+    .donate-form .form-checkbox .input {
+
+    }
+
+    .donate-form p {
+        font-family: 'Roboto Slab';
+        font-weight: 400;
+        font-size: 11.5pt;
+        line-height: 14pt;
+        letter-spacing: 0.12pt;
+        color: #1F1F1F;
+        padding-top: 10.666px;
+    }
+
+    .donate-form p .red {
+        color: #CE0538;
+        font-weight: 700;
+    }
+
+</style>
+</head>
+
+<body>
+    <div class="page">
+        <div class="page-content">
+            <div class="receipt"><b>Your receipt from Renewal</b></div>
+            <div class="top-logo">
+                <img src="https://renewal365.org/images/common/receipt-renewal-logo.png">
+                <p class="date">January 15, 2025</p>
+            </div>
+            <div class="main-text">
+                <div class="text">
+                    Dear {{186534448__salutation}},<br><br>
+                    Elit ame non expliqui cullesequae nam laut odis sapit ium et et pra sedigenihil invelit porro magnisi ditae nam quam fugit adis dolut quassed etur sed qui occum earum quissit asperspist eate voluptiur serio blatet is ut que sequaturerum quassit occaborepe dolorum quibus.<br><br>
+                    Ad mod ullibus. Luptatus eliasped que porererunt laborero quati imi, aut opta volenem nonsedipsam velitat quatus eicipsa ectecum quodigent. Elit ame non expliqui cullesequae nam laut odis sapit ium et et pra sedigenihil invelit porro magnisi ditae nam quam fugit adis dolut quassed etur sed qui occum earum quissit asperspist eate voluptiur serio blatet is ut que sequaturerum quassit occaborepe dolorum quibus.<br><br>
+                    Ad mod ullibus. Luptatus eliasped que porererunt laborero quati imi, aut opta volenem nonsedipsam velitat quatus eicipsa ectecum quodigent.<br><br>
+                    Sincerely,
+                </div>
+                <img class="signature" src="https://renewal365.org/images/common/signature jimmy print.jpg">
+            </div>
+            <div class="footer">
+                <div class="leftcol">
+                    <div class="title" style="font-weight: 700;"><b>Please help meet our financial shortfall</b></div>
+                    <div class="text">Use the other side of this reply slip to tell us the amount of your urgent gift. Your kindness will help close the financial gap while you feed and support the homeless. Please be sure that the address below shows through your return address window.</div>
+                    <div class="logo-block">
+                        <img src="https://renewal365.org/images/common/receipt-renewal-logo.png">
+                        <div class="address">
+                            The Renewal Center<br>
+                            548 Market St # 54802<br>
+                            San Francisco, CA 94104<br>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="page">
+        <div class="page-content page2">
+            <div class="main-text">
+                <div class="title">The Renewal Center</div>
+                <div class="subtitle">A record of your giving in 2019</div>
+                <div class="logos-wrap"><img src="https://renewal365.org/images/common/life essentials renewal web print.png" class="logos" /></div>
+                <table>
+                    <thead>
+                        <tr>
+                            <td><p>Date</p></td>
+                            <td><p>Reference</p></td>
+                            <td><p>Amount</p></td>
+                            <td><p>Currency</p></td>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><p>2022-01-01</p></td>
+                            <td><p>RWL-5233</p></td>
+                            <td><p>400.00</p></td>
+                            <td><p>CNY</p></td>
+                        </tr>
+                        <tr>
+                            <td><p>2022-01-01</p></td>
+                            <td><p>RWL-5233</p></td>
+                            <td><p>400.00</p></td>
+                            <td><p>CNY</p></td>
+                        </tr>
+                        <tr>
+                            <td><p>2022-01-01</p></td>
+                            <td><p>RWL-5233</p></td>
+                            <td><p>400.00</p></td>
+                            <td><p>CNY</p></td>
+                        </tr>
+                        <tr>
+                            <td><p>2022-01-01</p></td>
+                            <td><p>RWL-5233</p></td>
+                            <td><p>400.00</p></td>
+                            <td><p>CNY</p></td>
+                        </tr>
+                        <tr>
+                            <td><p>2022-01-01</p></td>
+                            <td><p>RWL-5233</p></td>
+                            <td><p>400.00</p></td>
+                            <td><p>CNY</p></td>
+                        </tr>
+                        <tr>
+                            <td><p>2022-01-01</p></td>
+                            <td><p>RWL-5233</p></td>
+                            <td><p>400.00</p></td>
+                            <td><p>CNY</p></td>
+                        </tr>
+                        <tr>
+                            <td><p>2022-01-01</p></td>
+                            <td><p>RWL-5233</p></td>
+                            <td><p>400.00</p></td>
+                            <td><p>CNY</p></td>
+                        </tr>
+                        <tr>
+                            <td><p>2022-01-01</p></td>
+                            <td><p>RWL-5233</p></td>
+                            <td><p>400.00</p></td>
+                            <td><p>CNY</p></td>
+                        </tr>
+                        <tr>
+                            <td><p>2022-01-01</p></td>
+                            <td><p>RWL-5233</p></td>
+                            <td><p>400.00</p></td>
+                            <td><p>CNY</p></td>
+                        </tr>
+                        <tr>
+                            <td><p>2022-01-01</p></td>
+                            <td><p>RWL-5233</p></td>
+                            <td><p>400.00</p></td>
+                            <td><p>CNY</p></td>
+                        </tr>
+                        <tr>
+                            <td><p>2022-01-01</p></td>
+                            <td><p>RWL-5233</p></td>
+                            <td><p>400.00</p></td>
+                            <td><p>CNY</p></td>
+                        </tr>
+                        <tr>
+                            <td><p>2022-01-01</p></td>
+                            <td><p>RWL-5233</p></td>
+                            <td><p>400.00</p></td>
+                            <td><p>CNY</p></td>
+                        </tr>
+                        <tr>
+                            <td><p>2022-01-01</p></td>
+                            <td><p>RWL-5233</p></td>
+                            <td><p>400.00</p></td>
+                            <td><p>CNY</p></td>
+                        </tr>
+                        <tr>
+                            <td><p>2022-01-01</p></td>
+                            <td><p>RWL-5233</p></td>
+                            <td><p>400.00</p></td>
+                            <td><p>CNY</p></td>
+                        </tr>
+                        <tr>
+                            <td><p>2022-01-01</p></td>
+                            <td><p>RWL-5233</p></td>
+                            <td><p>400.00</p></td>
+                            <td><p>CNY</p></td>
+                        </tr>
+                        <tr>
+                            <td><p>2022-01-01</p></td>
+                            <td><p>RWL-5233</p></td>
+                            <td><p>400.00</p></td>
+                            <td><p>CNY</p></td>
+                        </tr>
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <td class="firstcol" colspan="3"><p>Your total giving</p></td>
+                            <td class="lastcol"><p>{{186534451__output}}</p></td>
+                        </tr>
+                    </tfoot>
+                </table>
+                <div class="subtable">Life Essentials Foundation is a 50l(c)(3) organization (EIN: 46-2309719). This letter may serve as a record of your donation. No goods or services were provided, in whole or in part, for these contributions.</div>
+            </div>
+            <div class="donate-form">
+                <div class="form-banner">My next gift to transform lives, every day</div>
+                <div class="form-title">I want to give warm clothes and a wholesome meal to people escaping the cold.</div>
+                <div class="form-checkbox">
+                    <div class="text"><span class='strong'>$29.61 </span> to provide a hot meal, shower, and warm clothes for 21 people</div>
+                </div>
+                <div class="form-checkbox">
+                    <div class="text"><span class='strong'>$52.88 </span> to provide a hot meal, shower, and warm clothes for 38 people</div>
+                </div>
+                <div class="form-checkbox">
+                    <div class="text"><span class='strong'>$63.45 </span> to provide a hot meal, shower, and warm clothes for 45 people</div>
+                </div>
+                <div class="form-checkbox">
+                    <div class="text"><span class='strong'>$84.60 </span> to provide a hot meal, shower, and warm clothes for 60 people</div>
+                </div>
+                <div class="form-checkbox">
+                    <div class="text input-text"><span class='strong'>$</span> <span class="input"></span> to provide a hot meal, shower, and warm clothes for 60 people</div>
+                </div>
+                <p>Send this form back with your gift or visit <span class='red'>www.renewal.org.cn</span></p>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

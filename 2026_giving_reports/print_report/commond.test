@@ -1,0 +1,58 @@
+curl https://api.lob.com/v1/letters \
+  -u test_4256e51a3f0db7b2ccddb6bfef111c5d538: \
+  -d "description=news letter" \
+  -d "to[name]=John and Jane Sample" \
+  -d "to[address_line1]=100 Oak St" \
+  -d "to[address_city]=Sample" \
+  -d "to[address_state]=NC" \
+  -d "to[address_zip]=10101" \
+  -d "to[address_country]=US" \
+  -d "from[name]=The Renewal Center" \
+  -d "from[address_line1]=548 Market St # 54802" \
+  -d "from[address_city]=San Francisco" \
+  -d "from[address_state]=CA" \
+  -d "from[address_zip]=94104" \
+  -d "from[address_country]=US" \
+  -d "file=https://d33pspace.github.io/LOB-template/2024_01_reports/print_report/test2.html" \
+  -d "color=true" \
+  -d "double_sided=true" \
+  -d "return_envelope=true" \
+  -d "address_placement=top_first_page" \
+  -d "perforated_page=1" \
+  -d "mail_type=usps_first_class" \
+  -d "merge_variables[93710553__COL]=xxxxxx"
+
+
+curl https://api.lob.com/v1/letters \
+  -u test_4256e51a3f0db7b2ccddb6bfef111c5d538: \
+  -d "description=news letter" \
+  -d "to[name]=John and Jane Sample" \
+  -d "to[address_line1]=100 Oak St" \
+  -d "to[address_city]=Sample" \
+  -d "to[address_state]=NC" \
+  -d "to[address_zip]=10101" \
+  -d "to[address_country]=US" \
+  -d "from[name]=The Renewal Center" \
+  -d "from[address_line1]=548 Market St # 54802" \
+  -d "from[address_city]=San Francisco" \
+  -d "from[address_state]=CA" \
+  -d "from[address_zip]=94104" \
+  -d "from[address_country]=US" \
+  --data-urlencode "file=tmpl_c824be78146e8fa" \
+  -d "color=true" \
+  -d "double_sided=true" \
+  -d "return_envelope=true" \
+  -d "address_placement=top_first_page" \
+  -d "perforated_page=1" \
+  -d "mail_type=usps_first_class" \
+  -d "merge_variables[93710553__COL]=xxxxxx"
+
+
+
+
+htmlTemplate=`cat renewal.html`
+TOKEN=05b14c23a9a9ffa91b5d7ae8499bed4b166f503ab47b964b3e76c0da468d3597eaa3d0538f285f17af10bd2fa01f8163af097bca396b1a93bf75f11c99cf3535
+curl --request POST --url https://hastebin.com/documents --header "Authorization: Bearer $TOKEN" --header "content-type: text/plain" --data "$htmlTemplate"
+
+
+
