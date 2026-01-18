@@ -180,7 +180,7 @@ if local_mode:
     # read_json_object = json.dumps(read_resource("input.json"))
     input_data = {
         "json_object": read_json_object,
-        "preferred_language": "en-us",
+        "preferred_language": "zh-cn", # zh-cn, en-us
         "mail_to": "edwazhao@hotmail.com",
         "salutation": "xxx"
     }

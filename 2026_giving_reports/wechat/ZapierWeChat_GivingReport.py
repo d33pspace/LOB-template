@@ -306,7 +306,7 @@ def send_report_to_website(input_obj):
 ftp_host = 'renewal365.org'
 ftp_username = 'edwazhao@renewal365.org'
 ftp_password = 'A6%hJ!xGea'
-remote_html_directory = '/givingreport/2026/'
+remote_html_directory = '/givingreport/2026_wechat_reports/'
 if local_mode:
     read_json_object = read_resource("input_2page.json")
     # read_json_object = json.dumps(read_resource("input.json"))
@@ -318,7 +318,7 @@ if local_mode:
         "receipt_delivery_multi_currency": True,
         #### new ends
         "json_object": read_json_object,
-        "preferred_language": "en-us",
+        "preferred_language": "zh-cn", # zh-cn, en-us
         "mail_to": "test-user@renewal.com",
         "salutation": "Test xUser"
     }
