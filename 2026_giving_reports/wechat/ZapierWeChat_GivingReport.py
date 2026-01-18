@@ -2,7 +2,8 @@
 # V2024-12-08 init version of WeChat giving report
 # V2024-12-21 add receipt_delivery_multi_currency
 # V2025-02-22 update wechat template
-# V2025-02-28 remove spaces from the url 
+# V2025-02-28 remove spaces from the url
+# V2026-01-10 new version of content
 ##############
 import os
 import sys

@@ -1,6 +1,7 @@
 ##############
 # V2024-12-16 report
 # V2025-02-10 add receiptName
+# V2026-01-10 new version of content
 ##############
 import os
 import sys

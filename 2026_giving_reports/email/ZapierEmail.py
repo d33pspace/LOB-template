@@ -1,6 +1,7 @@
 ##############
 # V2024-12-16 report
 # V2024-12-21 add receipt_delivery_multi_currency
+# V2026-01-10 new version of content
 ##############
 import os
 import sys
