@@ -68,9 +68,16 @@ def read_resource(url):
         response = requests.get(url)
         content = response.text
         
+        # Print URL and HTTP status code for non-local mode
+        print(f'URL: {url} - HTTP Status Code: {response.status_code}')
+        
         # Check if the response contains 404 error
         if '<h1>404</h1>' in content:
             print(f'Warning: 404 error for URL: {url}')
+        
+        # Check if the response contains img/qrcode-zh.png
+        if 'img/qrcode-zh.png' in content:
+            print(f'Warning: img/qrcode-zh.png found in URL: {url}')
 
     print(f'read_resource from {url} with content {content[:100]}')
     # Check if the resource is a JSON file based on the file extension
