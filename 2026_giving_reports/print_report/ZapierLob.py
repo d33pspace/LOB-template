@@ -67,6 +67,10 @@ def read_resource(url):
         # Otherwise, read the resource from the provided URL
         response = requests.get(url)
         content = response.text
+        
+        # Check if the response contains 404 error
+        if '<h1>404</h1>' in content:
+            print(f'Warning: 404 error for URL: {url}')
 
     print(f'read_resource from {url} with content {content[:100]}')
     # Check if the resource is a JSON file based on the file extension
