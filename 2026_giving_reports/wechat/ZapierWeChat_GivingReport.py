@@ -89,8 +89,14 @@ def translate_currency(currency_set, currency=None):
 
 
 def read_resource(url):
+    # Treat JSON inputs as local files so local test data like input_2page.json can be loaded
+    # even when local_mode is False.
+    # url_lower = str(url).lower()
+    # is_json_resource = url_lower.endswith('.json') or '.json?' in url_lower or '.json#' in url_lower
+
+    # if local_mode or is_json_resource:
     if local_mode:
-        # If local mode is enabled, assume the resource is a local filename
+        # If local mode is enabled (or the resource is a JSON file), assume the resource is a local filename
         filename = os.path.basename(url)
         with open(filename, 'r', encoding='utf-8') as file:
             content = file.read()
