@@ -72,9 +72,17 @@ For i = start_row + 1 To end_row - 1
     JSON_C1 = "{" & DQ & "invoiceNumber" & DQ & ": " & DQ & Range("B" & i).Value & DQ & ","
     JSON_C2 = DQ & "invoiceDate" & DQ & ": " & DQ & Range("C" & i).Value & DQ & ","
     JSON_C3 = DQ & "reference" & DQ & ": " & DQ & Range("D" & i).Value & DQ & ","
-    JSON_C4 = DQ & "description" & DQ & ": " & DQ & VBA.Trim(Application.WorksheetFunction.Clean(Range("E" & i).Value)) & DQ & ","
+    JSON_C4 = DQ & "description" & DQ & ": " & DQ & VBA.Trim(Application.WorksheetFunction.Clean(VBA.Replace(Range("E" & i).Value, DQ, "\" & DQ))) & DQ & ","
     JSON_C5 = DQ & "unitPriceSource" & DQ & ": " & DQ & Range("F" & i).Value & DQ & ","
-    JSON_C6 = DQ & "currencyRate" & DQ & ": " & DQ & Format(Range("F" & i).Value / Range("G" & i).Value, "0.00") & DQ & ","
+    
+    Dim currencyRateVal As String
+    If IsNumeric(Range("G" & i).Value) And Range("G" & i).Value <> 0 Then
+        currencyRateVal = Format(CDbl(Range("F" & i).Value) / CDbl(Range("G" & i).Value), "0.00")
+    Else
+        currencyRateVal = "0.00"
+    End If
+    JSON_C6 = DQ & "currencyRate" & DQ & ": " & DQ & currencyRateVal & DQ & ","
+    
     JSON_C7 = DQ & "invoiceTotalUSD" & DQ & ": " & DQ & Range("G" & i).Value & DQ & ","
     JSON_C8 = DQ & "originalCurrency" & DQ & ": " & DQ & Range("H" & i).Value & DQ & ","
     JSON_C9 = DQ & "method" & DQ & ": " & DQ & Range("I" & i).Value & DQ & "}"
