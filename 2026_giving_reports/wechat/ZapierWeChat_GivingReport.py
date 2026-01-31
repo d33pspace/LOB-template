@@ -326,7 +326,7 @@ ftp_username = 'edwazhao@renewal365.org'
 ftp_password = 'A6%hJ!xGea'
 remote_html_directory = '/givingreport/2026_wechat_reports/'
 if local_mode:
-    read_json_object = read_resource("input_2page.json")
+    read_json_object = read_resource("input.json")
     # read_json_object = json.dumps(read_resource("input.json"))
     input_data = {
         ##### new starts
