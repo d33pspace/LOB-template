@@ -4,6 +4,7 @@
 # V2025-02-22 update wechat template
 # V2025-02-28 remove spaces from the url
 # V2026-01-10 new version of content
+# V2026-01-31 add translate_single_currency
 ##############
 import os
 import sys
@@ -80,6 +81,11 @@ def translate_currency(currency_set, currency=None):
         # If currency is not provided, pop the single currency from the set
         currency = next(iter(currency_set), None)
 
+    return translate_single_currency(currency)
+
+
+def translate_single_currency(currency):
+    # Centralize single-currency labeling logic.
     if currency == 'USD':
         return 'USD' if preferred_language == 'en' else '美元'
     elif currency == 'CNY':
@@ -170,7 +176,7 @@ def compose_html():
         html_content = html_content.replace('{{ 202401_report_amount }}',
                                             amount_format.format(float(line_item['unitPriceSource'])))
         html_content = html_content.replace('{{ 202401_report_currency }}',
-                                            translate_currency({}, line_item['originalCurrency']))
+                                            translate_single_currency(line_item['originalCurrency']))
         html_content = html_content.replace('{{ 202401_report_exchange_rate }}',
                                             '1' if line_item['originalCurrency'] == 'USD' else str(
                                                 line_item['currencyRate']))
@@ -336,7 +342,7 @@ if local_mode:
         "receipt_delivery_multi_currency": True,
         #### new ends
         "json_object": read_json_object,
-        "preferred_language": "zh-cn", # zh-cn, en-us
+        "preferred_language": "en-us", # zh-cn, en-us
         "mail_to": "test-user@renewal.com",
         "salutation": "Test xUser"
     }
